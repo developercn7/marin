@@ -52,6 +52,12 @@ section h2{font-size:2rem;margin-bottom:1.5rem}
 .testimonial img{width:84px;height:84px;border-radius:50%;object-fit:cover;flex:none;border:2px solid var(--line)}
 .testimonial blockquote{margin:0;font-family:"Reem Kufi","IBM Plex Sans Arabic",Tahoma,sans-serif;font-size:1.4rem;line-height:1.6}
 .testimonial cite{display:block;margin-top:.4rem;font-style:normal;color:var(--muted);font-size:.95rem}
+.review-form{margin-top:1.5rem;max-width:36rem;display:grid;gap:.9rem}
+.review-form h3{font-size:1.3rem}
+.review-form label{display:grid;gap:.3rem;color:var(--muted);font-size:.95rem}
+.review-form input,.review-form textarea{width:100%;font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:.7rem .9rem}
+.review-form button{border:0;cursor:pointer;font:inherit;font-weight:500;justify-self:start}
+.review-form small{color:var(--muted)}
 footer{padding:2rem 0;color:var(--muted);font-size:.9rem}
 @media(min-width:700px){.projects{grid-template-columns:repeat(3,1fr)}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
@@ -92,6 +98,23 @@ footer{padding:2rem 0;color:var(--muted);font-size:.9rem}
         <cite>محمود الوسيم</cite>
       </div>
     </figure>
+    <form class="review-form" id="reviewForm">
+      <h3>اكتب رأيك</h3>
+      <label>اسمك<input id="rvName" type="text" required maxlength="60"></label>
+      <label>رأيك<textarea id="rvText" rows="3" required maxlength="400"></textarea></label>
+      <button class="btn" type="submit">ابعت رأيك</button>
+      <small>هيتفتح واتساب برسالة جاهزة، وهنشر رأيك بعد المراجعة.</small>
+    </form>
+    <script>
+    document.getElementById("reviewForm").addEventListener("submit",function(e){
+      e.preventDefault();
+      var n=document.getElementById("rvName").value.trim();
+      var t=document.getElementById("rvText").value.trim();
+      if(!n||!t)return;
+      var msg="رأي جديد على الموقع\nالاسم: "+n+"\nالرأي: "+t;
+      window.open("https://wa.me/201276239331?text="+encodeURIComponent(msg),"_blank");
+    });
+    </script>
   </section>
 
   <section id="skills">
