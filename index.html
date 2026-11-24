@@ -47,6 +47,7 @@ section h2{font-size:2rem;margin-bottom:1.5rem}
 .skills{display:flex;flex-wrap:wrap;gap:.6rem;padding:0;margin:0;list-style:none}
 .skills li{border:1px solid var(--line);border-radius:999px;padding:.2rem 1rem;background:var(--surface)}
 .contact a.mail{font-family:"Reem Kufi",Tahoma,sans-serif;font-size:clamp(1.4rem,5vw,2.4rem);color:var(--accent);word-break:break-all}
+.contact .actions{display:flex;flex-wrap:wrap;gap:1rem 1.5rem;align-items:center;margin-top:1rem}
 footer{padding:2rem 0;color:var(--muted);font-size:.9rem}
 @media(min-width:700px){.projects{grid-template-columns:repeat(3,1fr)}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
@@ -88,7 +89,10 @@ footer{padding:2rem 0;color:var(--muted);font-size:.9rem}
   <section id="contact" class="contact">
     <h2>تواصل معي</h2>
     <p>ابعتلي فكرتك وهرد عليك في خلال يوم.</p>
-    <a class="mail" href="mailto:marinmagdy2@gmail.com">marinmagdy2@gmail.com</a>
+    <div class="actions">
+      <a class="mail" href="mailto:marinmagdy2@gmail.com">marinmagdy2@gmail.com</a>
+      <a class="btn" href="https://wa.me/201276239331" target="_blank" rel="noopener">كلمني على واتساب</a>
+    </div>
   </section>
 
   <footer>© 2026 مارين مجدي</footer>
