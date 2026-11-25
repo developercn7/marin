@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0F1730">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<meta name="description" content="صانع الاستيكرز، ارفع أي صورة وحوّلها استيكر في ثانية.">
+<title>صانع الاستيكرز 😂</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@500;700&family=IBM+Plex+Sans+Arabic:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#EDF1F7; --surface:#FFFFFF; --ink:#12203F; --muted:#51607F; --line:#C9D3E3; --accent:#2D5BFF; --on-accent:#FFFFFF;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#0F1730; --surface:#18233F; --ink:#EAF0FF; --muted:#A3B1D1; --line:#2B3A5E; --accent:#7C9BFF; --on-accent:#0F1730;}
+}
+:root[data-theme="dark"]{--bg:#0F1730; --surface:#18233F; --ink:#EAF0FF; --muted:#A3B1D1; --line:#2B3A5E; --accent:#7C9BFF; --on-accent:#0F1730;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans Arabic",Tahoma,Arial,sans-serif;font-size:1.05rem;line-height:1.9}
+h1,h2{font-family:"Reem Kufi","IBM Plex Sans Arabic",Tahoma,sans-serif;margin:0;line-height:1.25}
+.wrap{max-width:720px;margin:0 auto;padding:0 1.25rem 3rem}
+nav{display:flex;gap:1.25rem;padding:1.25rem 0;flex-wrap:wrap}
+nav a{text-decoration:none;color:var(--muted)}
+nav a:hover{color:var(--ink)}
+header{padding:2rem 0 1.5rem;border-bottom:1px solid var(--line);margin-bottom:2rem}
+header h1{font-size:clamp(2.2rem,8vw,3.5rem);font-weight:700}
+header p{color:var(--muted);margin:.75rem 0 0;font-size:1.1rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:1.5rem;margin-bottom:1.5rem}
+label{display:block;font-weight:500;margin-bottom:.5rem}
+input[type=text]{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;color:var(--ink);padding:.7rem 1rem;font-family:inherit;font-size:1rem}
+.presets{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.5rem}
+.preset{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:.45rem 1rem;cursor:pointer;font-family:inherit;font-size:.95rem;transition:.15s}
+.preset.active{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.btn{display:inline-block;background:var(--accent);color:var(--on-accent);border:none;border-radius:12px;padding:.8rem 1.75rem;font-family:inherit;font-size:1.05rem;font-weight:500;cursor:pointer;text-decoration:none}
+.btn:active{transform:scale(.97)}
+.upzone{border:2px dashed var(--line);border-radius:14px;padding:2rem;text-align:center;color:var(--muted);cursor:pointer;transition:.15s}
+.upzone:hover{border-color:var(--accent);color:var(--ink)}
+canvas{max-width:100%;border-radius:14px;display:block;margin:0 auto;background:#fff}
+.hidden{display:none}
+.hint{color:var(--muted);font-size:.92rem;margin-top:1rem}
+footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--line);color:var(--muted);font-size:.92rem}
+footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+  <a href="index.html">← الرئيسية</a>
+  <a href="chat.html">الشات</a>
+  <a href="games.html">الألعاب</a>
+</nav>
+<header>
+  <h1>صانع الاستيكرز 😂</h1>
+  <p>ارفع أي صورة، اختار الستايل، وحمّل الاستيكر في ثانية</p>
+</header>
+
+<div class="card">
+  <div class="upzone" id="upzone">
+    <div style="font-size:2.2rem">📸</div>
+    <div>دوس هنا واختار صورة من موبايلك</div>
+    <input type="file" id="file" accept="image/*" class="hidden">
+  </div>
+</div>
+
+<div id="editor" class="hidden">
+  <div class="card">
+    <label>الستايل</label>
+    <div class="presets">
+      <button class="preset active" data-p="classic">كلاسيك ⚫⚪</button>
+      <button class="preset" data-p="soft">ناعم</button>
+      <button class="preset" data-p="color">ملون</button>
+      <button class="preset" data-p="normal">الصورة عادي</button>
+    </div>
+  </div>
+  <div class="card">
+    <label>كلمة على الاستيكر (اختياري)</label>
+    <input type="text" id="caption" maxlength="30" placeholder="اكتب هنا...">
+  </div>
+  <div class="card">
+    <label>المعاينة</label>
+    <canvas id="cv" width="512" height="512"></canvas>
+    <div style="text-align:center;margin-top:1.25rem">
+      <button class="btn" id="share">💬 ابعته واتساب</button>
+      <button class="btn" id="dl" style="background:var(--bg);color:var(--ink);border:1px solid var(--line)">⬇️ حمّله</button>
+    </div>
+    <p class="hint">زرار واتساب بيفتحلك المشاركة على طول، تختار الشات ويبعت الاستيكر جاهز 👌 ولو حابب يبقى في قائمة الاستيكرز عندك: افتح الصورة في الواتساب، دوس عليها مطولًا واختار إضافة للاستيكرز</p>
+  </div>
+</div>
+
+<footer>صُنع بحب من <a href="index.html">مارين</a> 😂</footer>
+</div>
+
+<script>
+(function(){
+  var file=document.getElementById('file'),upzone=document.getElementById('upzone'),
+      editor=document.getElementById('editor'),cv=document.getElementById('cv'),
+      ctx=cv.getContext('2d'),caption=document.getElementById('caption'),
+      dl=document.getElementById('dl'),presets=document.querySelectorAll('.preset');
+  var img=null,mode='classic';
+
+  upzone.addEventListener('click',function(){file.click()});
+  file.addEventListener('change',function(){
+    if(!file.files||!file.files[0])return;
+    var r=new FileReader();
+    r.onload=function(e){
+      img=new Image();
+      img.onload=function(){editor.classList.remove('hidden');draw();editor.scrollIntoView({behavior:'smooth'})};
+      img.src=e.target.result;
+    };
+    r.readAsDataURL(file.files[0]);
+  });
+
+  presets.forEach(function(b){
+    b.addEventListener('click',function(){
+      presets.forEach(function(x){x.classList.remove('active')});
+      b.classList.add('active');mode=b.dataset.p;draw();
+    });
+  });
+  caption.addEventListener('input',draw);
+
+  function draw(){
+    if(!img)return;
+    var W=512,H=512,pad=14,r=34;
+    // white rounded card
+    ctx.clearRect(0,0,W,H);
+    ctx.save();
+    roundRect(ctx,pad,pad,W-2*pad,H-2*pad,r);
+    ctx.fillStyle='#ffffff';ctx.fill();
+    ctx.strokeStyle='rgba(0,0,0,.08)';ctx.lineWidth=2;ctx.stroke();
+    ctx.clip();
+    // square crop of the image
+    var cap=caption.value.trim(),capH=cap?64:0;
+    var inner=W-2*pad-16, availH=H-2*pad-16-capH;
+    var side=Math.min(inner,availH);
+    var dx=(W-side)/2, dy=pad+8+(availH-side)/2;
+    var iw=img.width,ih=img.height,s=Math.min(iw,ih);
+    var sx=(iw-s)/2,sy=(ih-s)/2;
+    var off=document.createElement('canvas');off.width=side;off.height=side;
+    var oc=off.getContext('2d');
+    oc.drawImage(img,sx,sy,s,s,0,0,side,side);
+    if(mode!=='normal'){stylize(oc,side,mode)}
+    ctx.drawImage(off,dx,dy);
+    // caption
+    if(cap){
+      ctx.fillStyle='#111';
+      ctx.font='700 40px "Reem Kufi","IBM Plex Sans Arabic",Tahoma,sans-serif';
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(cap,W/2,H-pad-8-capH/2);
+    }
+    ctx.restore();
+  }
+
+  function stylize(oc,size,mode){
+    var d=oc.getImageData(0,0,size,size),p=d.data,i,g;
+    for(i=0;i<p.length;i+=4){
+      g=0.299*p[i]+0.587*p[i+1]+0.114*p[i+2];
+      if(mode==='classic'){
+        // high-contrast stencil like the classic meme stickers
+        g=Math.pow(g/255,0.75)*255;
+        g=((g-128)*2.2)+140; // contrast + slight brighten
+        g=Math.max(0,Math.min(255,g));
+        // posterize to few levels
+        g=Math.round(g/64)*64;
+        p[i]=p[i+1]=p[i+2]=g;
+      }else if(mode==='soft'){
+        g=((g-128)*1.35)+135;
+        g=Math.max(0,Math.min(255,g));
+        p[i]=p[i+1]=p[i+2]=g;
+      }else if(mode==='color'){
+        for(var c=0;c<3;c++){
+          var v=p[i+c];v=((v-128)*1.5)+132;v=Math.max(0,Math.min(255,v));
+          p[i+c]=Math.round(v/72)*72;
+        }
+      }
+    }
+    oc.putImageData(d,0,0);
+  }
+
+  function roundRect(ctx,x,y,w,h,r){
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);
+    ctx.arcTo(x+w,y,x+w,y+h,r);
+    ctx.arcTo(x+w,y+h,x,y+h,r);
+    ctx.arcTo(x,y+h,x,y,r);
+    ctx.arcTo(x,y,x+w,y,r);
+    ctx.closePath();
+  }
+
+  document.getElementById('share').addEventListener('click',function(){
+    cv.toBlob(function(blob){
+      var f=new File([blob],'sticker.png',{type:'image/png'});
+      if(navigator.canShare&&navigator.canShare({files:[f]})){
+        navigator.share({files:[f],title:'استيكر'}).catch(function(){});
+      }else{
+        var a=document.createElement('a');
+        a.download='sticker.png';a.href=cv.toDataURL('image/png');a.click();
+        alert('المتصفح دا مش بيدعم المشاركة المباشرة، حمّلناهولك وابعته من الاستوديو 👌');
+      }
+    },'image/png');
+  });
+
+  dl.addEventListener('click',function(){
+    var a=document.createElement('a');
+    a.download='sticker.png';
+    a.href=cv.toDataURL('image/png');
+    a.click();
+  });
+})();
+</script>
+</body>
+</html>
