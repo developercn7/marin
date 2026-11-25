@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>الشات | مارين مجدي</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0F1730">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0F1730;--surface:#182446;--ink:#F2F5FB;--muted:#9AA7C7;--accent:#E8A33D;--line:#2A3B66}
+body{background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans Arabic",sans-serif;min-height:100vh;display:flex;flex-direction:column}
+header{padding:.9rem 1rem;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:.7rem;background:var(--surface)}
+header a{color:var(--muted);text-decoration:none;font-size:.95rem}
+header h1{font-family:"Reem Kufi";font-size:1.25rem;flex:1}
+#status{width:10px;height:10px;border-radius:50%;background:#666}
+#status.on{background:#2ecc71}
+#msgs{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:.55rem}
+.msg{max-width:78%;padding:.55rem .85rem;border-radius:14px;background:var(--surface);border:1px solid var(--line);line-height:1.6;word-break:break-word}
+.msg .who{font-size:.75rem;color:var(--accent);font-weight:700;display:block;margin-bottom:.1rem}
+.msg .time{font-size:.65rem;color:var(--muted);display:block;text-align:left;margin-top:.15rem}
+.msg.me{align-self:flex-start;background:var(--accent);color:#0F1730;border:none}
+.msg.me .who{color:#7a5210}
+.msg.me .time{color:#5c430f}
+.sys{align-self:center;font-size:.75rem;color:var(--muted);padding:.15rem .8rem;background:var(--surface);border-radius:999px}
+form{display:flex;gap:.5rem;padding:.8rem;border-top:1px solid var(--line);background:var(--surface)}
+input,button{font:inherit}
+#txt{flex:1;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:.6rem 1rem;color:var(--ink);outline:none}
+#txt:focus{border-color:var(--accent)}
+button{background:var(--accent);color:#0F1730;border:none;border-radius:999px;padding:.6rem 1.3rem;font-weight:700;cursor:pointer}
+#nameGate{position:fixed;inset:0;background:rgba(10,15,30,.92);display:flex;align-items:center;justify-content:center;z-index:10}
+#nameGate .box{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:2rem;text-align:center;max-width:320px;width:90%}
+#nameGate input{width:100%;margin:1rem 0;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:.7rem 1rem;color:var(--ink);text-align:center;outline:none}
+#nameGate h2{font-family:"Reem Kufi";color:var(--accent)}
+</style>
+</head>
+<body>
+<header>
+  <span id="status"></span>
+  <h1>شات صحاب مارين 💬</h1>
+  <a href="index.html">الموقع ←</a>
+</header>
+<div id="msgs"></div>
+<form id="f">
+  <input id="txt" maxlength="300" placeholder="اكتب رسالتك..." autocomplete="off">
+  <button type="submit">ابعت</button>
+</form>
+<div id="nameGate"><div class="box">
+  <h2>أهلا بيك في الشات 🎉</h2>
+  <p style="color:var(--muted);margin-top:.4rem">اكتب اسمك عشان صحابك يعرفوك</p>
+  <input id="nameIn" maxlength="20" placeholder="اسمك">
+  <button id="nameBtn" style="width:100%">دخول</button>
+</div></div>
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+<script>
+(function(){
+var TOPIC="marinmagdy66/chat/x7f2k9";
+var msgs=document.getElementById("msgs"),txt=document.getElementById("txt"),st=document.getElementById("status");
+var name=localStorage.getItem("chatName")||"";
+function esc(s){var d=document.createElement("div");d.textContent=s;return d.innerHTML;}
+function addMsg(m,me){
+ var d=document.createElement("div");
+ if(m.sys){d.className="sys";d.textContent=m.sys;}
+ else{d.className="msg"+(me?" me":"");
+  d.innerHTML=(me?"":'<span class="who">'+esc(m.n)+'</span>')+esc(m.t)+'<span class="time">'+new Date(m.ts*1000).toLocaleTimeString("ar-EG",{hour:"2-digit",minute:"2-digit"})+'</span>';}
+ msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;
+ while(msgs.children.length>150)msgs.removeChild(msgs.firstChild);
+}
+var hist=[];
+try{hist=JSON.parse(localStorage.getItem("chatHist")||"[]");}catch(e){}
+hist.forEach(function(m){addMsg(m,m.n===name);});
+function save(m){hist.push(m);if(hist.length>100)hist.shift();try{localStorage.setItem("chatHist",JSON.stringify(hist));}catch(e){}}
+var client=null,ci=0;
+var brokers=["wss://broker.emqx.io:8084/mqtt","wss://broker.hivemq.com:8884/mqtt"];
+function connect(){
+ st.className="";
+ client=mqtt.connect(brokers[ci%brokers.length],{clientId:"marin-"+Math.random().toString(36).slice(2,10),reconnectPeriod:4000,connectTimeout:8000});
+ client.on("connect",function(){st.className="on";client.subscribe(TOPIC);});
+ client.on("message",function(t,p){
+  try{var m=JSON.parse(p.toString());if(m&&m.n&&m.t){addMsg(m,m.n===name);save(m);}}catch(e){}
+ });
+ client.on("close",function(){st.className="";});
+ client.on("error",function(){st.className="";ci++;});
+}
+connect();
+document.getElementById("f").addEventListener("submit",function(e){
+ e.preventDefault();var t=txt.value.trim();if(!t||!name)return;
+ var m={n:name,t:t,ts:Math.floor(Date.now()/1000)};
+ if(client&&client.connected)client.publish(TOPIC,JSON.stringify(m));
+ else{addMsg(m,true);save(m);}
+ txt.value="";txt.focus();
+});
+function enter(){
+ name=document.getElementById("nameIn").value.trim().slice(0,20);
+ if(!name)return;
+ localStorage.setItem("chatName",name);
+ document.getElementById("nameGate").style.display="none";
+ txt.focus();
+}
+document.getElementById("nameBtn").addEventListener("click",enter);
+document.getElementById("nameIn").addEventListener("keydown",function(e){if(e.key==="Enter")enter();});
+if(name){document.getElementById("nameGate").style.display="none";}
+})();
+</script>
+</body>
+</html>
