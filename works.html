@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#0F1730">
+<title>أعمالي 🖼️ | مارين مجدي</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@500;700&family=IBM+Plex+Sans+Arabic:wght@400;500&display=swap">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0F1730;color:#EAF0FF;font-family:"IBM Plex Sans Arabic",Tahoma,sans-serif;min-height:100vh}
+header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;max-width:960px;margin:0 auto}
+h1{font-family:"Reem Kufi",Tahoma,sans-serif;font-size:1.5rem}
+header a{color:#EAF0FF;text-decoration:none;background:rgba(255,255,255,.12);padding:6px 14px;border-radius:999px;font-size:.9rem}
+.chips{display:flex;gap:10px;flex-wrap:wrap;padding:0 20px;max-width:960px;margin:10px auto 20px}
+.chip{border:1px solid #2B3A5E;background:transparent;color:#A3B1D1;padding:8px 18px;border-radius:999px;cursor:pointer;font:inherit}
+.chip.on{background:#7C9BFF;color:#0F1730;border-color:#7C9BFF;font-weight:500}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;padding:0 20px 40px;max-width:960px;margin:0 auto}
+.card{position:relative;border-radius:14px;overflow:hidden;border:1px solid #2B3A5E;cursor:pointer;background:#18233F;aspect-ratio:1}
+.card img{width:100%;height:100%;object-fit:cover;display:block}
+.card span{position:absolute;bottom:8px;right:8px;background:rgba(15,23,48,.8);color:#EAF0FF;padding:4px 12px;border-radius:999px;font-size:.8rem}
+#empty{display:none;text-align:center;color:#A3B1D1;padding:60px 24px;line-height:2}
+#overlay{position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;z-index:50;cursor:pointer}
+#overlay img{max-width:92%;max-height:92%;border-radius:12px}
+</style>
+</head>
+<body>
+<header>
+<h1>أعمالي 🖼️</h1>
+<a href="index.html">الرئيسية</a>
+</header>
+<div class="chips" id="chips"></div>
+<div class="grid" id="grid"></div>
+<div id="empty">لسه مفيش صور أعمال هنا.<br>ارفع الصور بأسماء work1.jpg و work2.jpg وهكذا<br>وعدّل تصنيف كل صورة من أول ملف works.html</div>
+<div id="overlay"><img id="ovImg" alt=""></div>
+<script>
+// عدّل تصنيف كل صورة من هنا (مواقع / متاجر / تصميم)
+var WORKS=[
+{src:"work1.jpg",cat:"مواقع"},{src:"work2.jpg",cat:"مواقع"},
+{src:"work3.jpg",cat:"متاجر"},{src:"work4.jpg",cat:"متاجر"},
+{src:"work5.jpg",cat:"تصميم"},{src:"work6.jpg",cat:"تصميم"},
+{src:"work7.jpg",cat:"مواقع"},{src:"work8.jpg",cat:"متاجر"},
+{src:"work9.jpg",cat:"تصميم"},{src:"work10.jpg",cat:"مواقع"},
+{src:"work11.jpg",cat:"متاجر"},{src:"work12.jpg",cat:"تصميم"}
+];
+var grid=document.getElementById("grid"),chips=document.getElementById("chips");
+var ov=document.getElementById("overlay"),ovImg=document.getElementById("ovImg");
+ov.onclick=function(){ov.style.display="none"};
+var found=[];
+WORKS.forEach(function(w,i){
+var im=new Image();
+im.onload=function(){found.push(w);render();};
+im.src=w.src;
+});
+var active="الكل";
+function render(){
+if(!found.length){document.getElementById("empty").style.display="block";return;}
+document.getElementById("empty").style.display="none";
+var cats=["الكل"];
+found.forEach(function(w){if(cats.indexOf(w.cat)<0)cats.push(w.cat);});
+chips.innerHTML="";
+cats.forEach(function(c){
+var b=document.createElement("button");b.className="chip"+(c===active?" on":"");b.textContent=c;
+b.onclick=function(){active=c;render();};
+chips.appendChild(b);
+});
+grid.innerHTML="";
+found.forEach(function(w){
+if(active!=="الكل"&&w.cat!==active)return;
+var d=document.createElement("div");d.className="card";
+var im=document.createElement("img");im.src=w.src;im.alt=w.cat;im.loading="lazy";
+var s=document.createElement("span");s.textContent=w.cat;
+d.appendChild(im);d.appendChild(s);
+d.onclick=function(){ovImg.src=w.src;ov.style.display="flex";};
+grid.appendChild(d);
+});
+}
+</script>
+</body>
+</html>
