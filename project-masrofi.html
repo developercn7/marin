@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0F1730">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<meta name="description" content="دراسة حالة: أداة لتتبع المصروفات الشهرية بواجهة بسيطة، تصميم واجهة مارين مجدي.">
+<title>تطبيق مصروفي 💰 | مارين مجدي</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@500;700&family=IBM+Plex+Sans+Arabic:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#EDF1F7; --surface:#FFFFFF; --ink:#12203F; --muted:#51607F; --line:#C9D3E3; --accent:#2D5BFF; --on-accent:#FFFFFF;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#0F1730; --surface:#18233F; --ink:#EAF0FF; --muted:#A3B1D1; --line:#2B3A5E; --accent:#7C9BFF; --on-accent:#0F1730;}
+}
+:root[data-theme="dark"]{--bg:#0F1730; --surface:#18233F; --ink:#EAF0FF; --muted:#A3B1D1; --line:#2B3A5E; --accent:#7C9BFF; --on-accent:#0F1730;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans Arabic",Tahoma,Arial,sans-serif;font-size:1.05rem;line-height:1.9}
+h1,h2,h3{font-family:"Reem Kufi","IBM Plex Sans Arabic",Tahoma,sans-serif;margin:0;line-height:1.25}
+a{color:inherit}
+.wrap{max-width:760px;margin:0 auto;padding:0 1.25rem 3rem}
+nav{display:flex;gap:1.25rem;padding:1.25rem 0;flex-wrap:wrap}
+nav a{text-decoration:none;color:var(--muted)}
+nav a:hover{color:var(--ink)}
+.hero{padding:2.5rem 0 2rem;border-bottom:1px solid var(--line);margin-bottom:2rem}
+.hero .tag{display:inline-block;background:var(--accent);color:var(--on-accent);border-radius:999px;padding:.2rem .9rem;font-size:.85rem;margin-bottom:.8rem}
+.hero h1{font-size:clamp(2rem,7vw,3.2rem);font-weight:700}
+.hero p{color:var(--muted);font-size:1.15rem;margin:.8rem 0 0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:1.5rem;margin-bottom:1.5rem}
+.card h2{font-size:1.35rem;margin-bottom:.6rem}
+.card ul{margin:.5rem 0 0;padding:0;list-style:none}
+.card li{padding:.3rem 0 .3rem 1.4rem;position:relative}
+.card li:before{content:"✓";position:absolute;right:0;color:var(--accent);font-weight:700}
+.steps{counter-reset:s}
+.step{display:flex;gap:1rem;padding:.8rem 0;border-bottom:1px dashed var(--line)}
+.step:last-child{border:none}
+.step b{counter-increment:s;flex:none;width:34px;height:34px;border-radius:50%;background:var(--accent);color:var(--on-accent);display:flex;align-items:center;justify-content:center;font-size:1rem}
+.step b:before{content:counter(s)}
+.tech{display:flex;gap:.5rem;flex-wrap:wrap}
+.tech span{border:1px solid var(--line);border-radius:999px;padding:.25rem .9rem;font-size:.88rem;color:var(--muted)}
+.cta{text-align:center;padding:2rem 0}
+.btn{display:inline-block;background:var(--accent);color:var(--on-accent);border:none;border-radius:12px;padding:.9rem 2rem;font-family:inherit;font-size:1.1rem;cursor:pointer;text-decoration:none}
+footer{margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--line);color:var(--muted);font-size:.92rem}
+footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+  <a href="index.html">← الرئيسية</a>
+  <a href="index.html#work">كل الأعمال</a>
+</nav>
+
+<div class="hero">
+  <span class="tag">تصميم واجهة</span>
+  <h1>تطبيق مصروفي 💰</h1>
+  <p>أداة بسيطة لتتبع المصروفات اليومية والشهرية، من غير جداول معقدة ولا خبرة حسابات.</p>
+</div>
+<div class="card">
+  <h2>التحدي 🎯</h2>
+  <p>أغلب تطبيقات المصاريف معقدة ومحتاجة تسجيل وإعدادات كتير، فالناس بتجربها أسبوع وتمسحها. الفكرة كانت: أداة تفتحها وتسجل فيها مصروفك في خمس ثواني، من غير أي حاجة تانية.</p>
+</div>
+<div class="card">
+  <h2>الحل 💡</h2>
+  <p>واجهة فيها حاجة واحدة أساسية: تسجيل مصروف جديد بسرعة، وملخص واضح بيقولك صرفت كام وعلى إيه وفاضلك كام. كل حاجة تانية اختفت أو اتبسطت لأقصى درجة.</p>
+</div>
+<div class="card">
+  <h2>أهم المميزات ✨</h2>
+  <ul>
+    <li>تسجيل مصروف في ثواني: المبلغ، التصنيف، وخلاص</li>
+    <li>تصنيفات جاهزة: أكل، مواصلات، خروج، فواتير، وأخرى</li>
+    <li>ملخص شهري بصري بيوضح فين بيروح الفلوس</li>
+    <li>ميزانية شهرية بتتظبط مرة واحدة وبتتحسب تلقائي</li>
+    <li>تنبيه لما توصل لنص الميزانية ولآخرها</li>
+    <li>يعمل بدون إنترنت وبيحفظ البيانات على الجهاز</li>
+  </ul>
+</div>
+<div class="card">
+  <h2>طريقة الشغل 🛠️</h2>
+  <div class="steps">
+    <div class="step"><b></b><div>حددنا أهم أكشن: تسجيل مصروف، وخليناه أقرب حاجة في الواجهة</div></div>
+    <div class="step"><b></b><div>صممنا الشاشات بأسلوب "شاشة واحدة لكل مهمة" عشان مفيش تشتيت</div></div>
+    <div class="step"><b></b><div>ركزنا على الوضوح: أرقام كبيرة، ألوان معبرة، وصفر مصطلحات بنكية</div></div>
+    <div class="step"><b></b><div>اختبرنا الاستخدام اليومي وبسّطنا أي خطوة حسّينا إنها بتاخد وقت</div></div>
+  </div>
+</div>
+<div class="card">
+  <h2>التقنيات المستخدمة ⚙️</h2>
+  <div class="tech"><span>تصميم واجهات</span><span>تجربة مستخدم</span><span>HTML</span><span>CSS</span><span>JavaScript</span></div>
+</div>
+
+<div class="cta">
+  <h2 style="font-size:1.5rem;margin-bottom:.8rem">عندك فكرة مشروع شبه دي؟</h2>
+  <a class="btn" href="index.html#contact">اطلب موقعك دلوقتي 💬</a>
+</div>
+<footer>صُنع بحب من <a href="index.html">مارين</a> 🌟</footer>
+</div>
+</body>
+</html>
