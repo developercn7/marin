@@ -87,6 +87,14 @@ nav,header,section,footer{position:relative;z-index:1}
 .countdown small{color:var(--muted)}
 .wa-float{position:fixed;bottom:1.25rem;left:1.25rem;z-index:50;background:#25D366;color:#fff;padding:.7rem 1.4rem;border-radius:999px;font-weight:600;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.25)}
 .wa-float:hover{filter:brightness(1.08)}
+
+.work-photos-title{margin-top:28px;text-align:center}
+.slider{position:relative;overflow:hidden;border-radius:16px;margin-top:12px}
+.slides{display:flex;transition:transform .5s ease}
+.slides img{min-width:100%;height:280px;object-fit:cover;display:block}
+.sl-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.45);color:#fff;border:0;width:38px;height:38px;border-radius:50%;font-size:20px;cursor:pointer;z-index:2}
+.sl-btn.prev{right:10px}
+.sl-btn.next{left:10px}
 </style>
 </head>
 <body>
@@ -121,6 +129,12 @@ nav,header,section,footer{position:relative;z-index:1}
       <article class="project"><h3>متجر الورد</h3><p>متجر إلكتروني لمحل ورد مع طلب سريع عبر واتساب.</p><small>تصميم وتطوير</small></article>
       <article class="project"><h3>عيادة الابتسامة</h3><p>موقع تعريفي لعيادة أسنان مع حجز المواعيد.</p><small>تصميم وتطوير</small></article>
       <article class="project"><h3>تطبيق مصروفي</h3><p>أداة لتتبع المصروفات الشهرية بواجهة بسيطة.</p><small>تصميم الواجهة</small></article>
+    </div>
+    <h3 class="work-photos-title">صور العملاء</h3>
+    <div class="slider" id="workSlider">
+      <div class="slides" id="workSlides"></div>
+      <button class="sl-btn prev" type="button" aria-label="السابق">&#8249;</button>
+      <button class="sl-btn next" type="button" aria-label="التالي">&#8250;</button>
     </div>
   </section>
 
@@ -367,6 +381,22 @@ if(cdD){
   })(start);
  });
 })();
+
+var WS_IMGS=["client1.jpg","client2.jpg","client3.jpg","client4.jpg","client5.jpg","client6.jpg","client7.jpg"];
+(function(){
+var wrap=document.getElementById("workSlides");if(!wrap)return;
+var done=0;
+function check(){done++;if(done===WS_IMGS.length){
+ if(!wrap.children.length){var s=document.getElementById("workSlider");s.innerHTML='<p style="text-align:center;padding:40px 10px;opacity:.7">صور الشغل جاية قريب 📸</p>';return;}
+ init();}}
+WS_IMGS.forEach(function(src){var im=new Image();im.alt="صورة من الشغل";im.onload=function(){wrap.appendChild(im);check();};im.onerror=check;im.src=src;});
+function init(){var i=0,n=wrap.children.length;
+ function go(d){i=(i+d+n)%n;wrap.style.transform="translateX("+(i*100)+"%)";}
+ var pv=document.querySelector(".sl-btn.prev"),nx=document.querySelector(".sl-btn.next");
+ if(pv)pv.onclick=function(){go(-1);};if(nx)nx.onclick=function(){go(1);};
+ setInterval(function(){go(1);},4000);}
+})();
+
 </script>
 </body>
 </html>
