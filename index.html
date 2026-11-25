@@ -72,11 +72,20 @@ nav button#themeBtn{background:none;border:1px solid var(--line);border-radius:9
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
 .reveal.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+.type-cursor{color:var(--accent);animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+#bgfx{position:fixed;inset:0;z-index:0;pointer-events:none}
+nav,header,section,footer{position:relative;z-index:1}
+#preloader{position:fixed;inset:0;z-index:9999;background:var(--bg);display:grid;place-items:center;transition:opacity .6s ease}
+#preloader span{font-family:"Reem Kufi",Tahoma,sans-serif;font-size:5rem;font-weight:700;color:var(--accent);animation:mpulse 1s ease-in-out infinite}
+@keyframes mpulse{50%{transform:scale(1.15);opacity:.7}}
+.reveal.in{transition:transform .15s ease,opacity .6s ease}
 .wa-float{position:fixed;bottom:1.25rem;left:1.25rem;z-index:50;background:#25D366;color:#fff;padding:.7rem 1.4rem;border-radius:999px;font-weight:600;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.25)}
 .wa-float:hover{filter:brightness(1.08)}
 </style>
 </head>
 <body>
+<div id="preloader"><span>M</span></div>
 <div class="wrap">
   <nav aria-label="التنقل">
     <a href="#about">نبذة</a><a href="#work">أعمالي</a><a href="#services">خدماتي</a><a href="#reviews">آراء</a><a href="#skills">مهاراتي</a><a href="#contact">تواصل</a><button id="themeBtn" type="button" aria-label="تبديل المظهر">☀️</button>
@@ -84,7 +93,7 @@ nav button#themeBtn{background:none;border:1px solid var(--line);border-radius:9
 
   <header class="hero">
     <h1>مارين مجدي</h1>
-    <p>مصمم ومطور ويب. باعمل مواقع بسيطة وسريعة وسهلة الاستخدام.</p>
+    <p>مصمم ومطور ويب. <span id="typer">باعمل مواقع بسيطة وسريعة وسهلة الاستخدام.</span><span class="type-cursor">|</span></p>
     <a class="btn" href="#contact">كلمني على مشروعك</a>
   </header>
 
@@ -250,6 +259,63 @@ var rObs=new IntersectionObserver(function(entries){
   });
 },{threshold:.15});
 revealEls.forEach(function(el){rObs.observe(el)});
+
+var pre=document.getElementById("preloader");
+function hidePre(){if(pre){pre.style.opacity="0";setTimeout(function(){pre.remove()},650)}}
+window.addEventListener("load",function(){setTimeout(hidePre,400)});
+setTimeout(hidePre,3000);
+(function(){
+ var el=document.getElementById("typer");if(!el)return;
+ if(window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+ var phrases=["باعمل مواقع بسيطة وسريعة وسهلة الاستخدام.","بابني متاجر إلكترونية كاملة.","باعمل صفحات هبوط بتبيع.","وبحب الشغل النضيف 😄"];
+ var pi=0,ci=phrases[0].length,del=true;
+ function tick(){
+  var p=phrases[pi];
+  if(del){ci--;el.textContent=p.slice(0,ci);
+   if(ci===0){del=false;pi=(pi+1)%phrases.length;setTimeout(tick,400);return}
+   setTimeout(tick,25);return}
+  ci++;el.textContent=p.slice(0,ci);
+  if(ci===p.length){del=true;setTimeout(tick,2000);return}
+  setTimeout(tick,55);
+ }
+ setTimeout(tick,2500);
+})();
+(function(){
+ if(window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+ var c=document.createElement("canvas");c.id="bgfx";document.body.prepend(c);
+ var ctx=c.getContext("2d"),W,H,pts=[],mouse={x:-999,y:-999};
+ function rs(){W=c.width=innerWidth;H=c.height=innerHeight}
+ rs();addEventListener("resize",rs);
+ for(var i=0;i<60;i++)pts.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,vx:(Math.random()-.5)*.5,vy:(Math.random()-.5)*.5});
+ addEventListener("mousemove",function(e){mouse.x=e.clientX;mouse.y=e.clientY});
+ addEventListener("mouseleave",function(){mouse.x=-999;mouse.y=-999});
+ var color="124,155,255";
+ function readColor(){var v=getComputedStyle(document.documentElement).getPropertyValue("--accent").trim();var m=v.match(/#(..)(..)(..)/);if(m)color=parseInt(m[1],16)+","+parseInt(m[2],16)+","+parseInt(m[3],16)}
+ readColor();if(tBtn)tBtn.addEventListener("click",function(){setTimeout(readColor,50)});
+ (function loop(){
+  ctx.clearRect(0,0,W,H);
+  for(var i=0;i<pts.length;i++){var p=pts[i];p.x+=p.vx;p.y+=p.vy;
+   if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;
+   ctx.beginPath();ctx.arc(p.x,p.y,1.8,0,7);ctx.fillStyle="rgba("+color+",.7)";ctx.fill();
+   for(var j=i+1;j<pts.length;j++){var q=pts[j],dx=p.x-q.x,dy=p.y-q.y,d=dx*dx+dy*dy;
+    if(d<9000){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.strokeStyle="rgba("+color+","+(0.18*(1-d/9000))+")";ctx.stroke()}}
+   var mdx=p.x-mouse.x,mdy=p.y-mouse.y,md=mdx*mdx+mdy*mdy;
+   if(md<14400){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(mouse.x,mouse.y);ctx.strokeStyle="rgba("+color+","+(0.25*(1-md/14400))+")";ctx.stroke()}
+  }
+  requestAnimationFrame(loop);
+ })();
+})();
+if(window.matchMedia("(hover:hover)").matches){
+ document.querySelectorAll(".project,.testimonial").forEach(function(card){
+  card.addEventListener("mousemove",function(e){
+   if(!card.classList.contains("in"))return;
+   var r=card.getBoundingClientRect();
+   var x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+   card.style.transform="perspective(600px) rotateX("+(-y*8)+"deg) rotateY("+(x*8)+"deg)";
+  });
+  card.addEventListener("mouseleave",function(){card.style.transform=""});
+ });
+}
 </script>
 </body>
 </html>
