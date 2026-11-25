@@ -63,6 +63,11 @@ section h2{font-size:2rem;margin-bottom:1.5rem}
 footer{padding:2rem 0;color:var(--muted);font-size:.9rem}
 @media(min-width:700px){.projects{grid-template-columns:repeat(3,1fr)}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+.stats{padding:2.5rem 0;border-bottom:1px solid var(--line)}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:1.2rem;text-align:center}
+.stat .num{display:block;font-size:2rem;font-weight:700;color:var(--accent);font-family:"Reem Kufi",Tahoma,sans-serif}
+.stat .lbl{color:var(--muted);font-size:.95rem}
 .wa-float{position:fixed;bottom:1.25rem;left:1.25rem;z-index:50;background:#25D366;color:#fff;padding:.7rem 1.4rem;border-radius:999px;font-weight:600;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.25)}
 .wa-float:hover{filter:brightness(1.08)}
 </style>
@@ -78,6 +83,14 @@ footer{padding:2rem 0;color:var(--muted);font-size:.9rem}
     <p>مصمم ومطور ويب. باعمل مواقع بسيطة وسريعة وسهلة الاستخدام.</p>
     <a class="btn" href="#contact">كلمني على مشروعك</a>
   </header>
+
+  <section class="stats" id="stats">
+    <div class="stats-grid">
+      <div class="stat"><span class="num" data-count="10">٠</span><span class="lbl">مشروع منفذ</span></div>
+      <div class="stat"><span class="num" data-count="8">٠</span><span class="lbl">عميل مبسوط</span></div>
+      <div class="stat"><span class="num" data-count="24">٠</span><span class="lbl">ساعة متوسط الرد</span></div>
+    </div>
+  </section>
 
   <section id="about">
     <h2>نبذة عني</h2>
@@ -126,6 +139,7 @@ footer{padding:2rem 0;color:var(--muted);font-size:.9rem}
         <cite>فادي سعيد</cite>
       </div>
     </figure>
+    <div id="auto-reviews"></div>
     <form class="review-form" id="reviewForm">
       <h3>اكتب رأيك</h3>
       <label>اسمك<input id="rvName" type="text" required maxlength="60"></label>
@@ -164,5 +178,56 @@ footer{padding:2rem 0;color:var(--muted);font-size:.9rem}
   <footer>© 2026 مارين مجدي</footer>
 </div>
 <a class="wa-float" href="https://wa.me/201276239331?text=%D9%85%D8%B3%D8%A7%D8%A1%20%D8%A7%D9%84%D8%AE%D9%8A%D8%B1%20%D9%85%D8%A7%D8%B1%D9%8A%D9%86%D8%8C%20%D8%B9%D9%86%D8%AF%D9%8A%20%D9%81%D9%83%D8%B1%D8%A9%20%D9%85%D8%B4%D8%B1%D9%88%D8%B9" target="_blank" rel="noopener">واتساب</a>
+<script>
+var REVIEWS_SHEET = "";
+var REVIEW_FORM_URL = "";
+function toAr(n){return String(n).replace(/\d/g,function(d){return "٠١٢٣٤٥٦٧٨٩"[d]})}
+var statsEl=document.querySelector(".stats");
+if(statsEl){
+  var obs=new IntersectionObserver(function(entries){
+    if(entries[0].isIntersecting){
+      obs.disconnect();
+      document.querySelectorAll(".stat .num").forEach(function(el){
+        var target=parseInt(el.getAttribute("data-count"),10),start=null;
+        function step(ts){
+          if(!start)start=ts;
+          var p=Math.min((ts-start)/1200,1);
+          el.textContent=toAr(Math.round(target*p))+(p===1?"+":"");
+          if(p<1)requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      });
+    }
+  },{threshold:.4});
+  obs.observe(statsEl);
+}
+if(REVIEWS_SHEET){
+  fetch("https://opensheet.elk.sh/"+REVIEWS_SHEET+"/1").then(function(r){return r.json()}).then(function(rows){
+    var box=document.getElementById("auto-reviews");
+    if(!box)return;
+    rows.reverse().forEach(function(row){
+      var name=(row["الاسم"]||"").trim(),text=(row["رأيك"]||"").trim();
+      if(!name||!text)return;
+      var f=document.createElement("figure");
+      f.className="testimonial";f.style.cssText="margin-inline:0;margin-top:1rem";
+      var a=document.createElement("div");a.className="avatar";a.setAttribute("aria-hidden","true");a.textContent=name.charAt(0);
+      var d=document.createElement("div");
+      var b=document.createElement("blockquote");b.textContent="“"+text+"”";
+      var c=document.createElement("cite");c.textContent=name;
+      d.appendChild(b);d.appendChild(c);f.appendChild(a);f.appendChild(d);
+      box.appendChild(f);
+    });
+  }).catch(function(){});
+}
+if(REVIEW_FORM_URL){
+  var rf=document.getElementById("reviewForm");
+  if(rf){
+    rf.addEventListener("submit",function(e){
+      e.preventDefault();
+      window.open(REVIEW_FORM_URL,"_blank");
+    });
+  }
+}
+</script>
 </body>
 </html>
