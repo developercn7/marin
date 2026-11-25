@@ -80,6 +80,11 @@ nav,header,section,footer{position:relative;z-index:1}
 #preloader span{font-family:"Reem Kufi",Tahoma,sans-serif;font-size:5rem;font-weight:700;color:var(--accent);animation:mpulse 1s ease-in-out infinite}
 @keyframes mpulse{50%{transform:scale(1.15);opacity:.7}}
 .reveal.in{transition:transform .15s ease,opacity .6s ease}
+.btn-ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+.countdown{display:flex;gap:1rem;justify-content:center;margin-top:1.25rem;flex-wrap:wrap}
+.countdown div{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:1rem 1.4rem;min-width:4.5rem;text-align:center}
+.countdown span{display:block;font-size:1.8rem;font-weight:700;color:var(--accent);font-family:"Reem Kufi",Tahoma,sans-serif}
+.countdown small{color:var(--muted)}
 .wa-float{position:fixed;bottom:1.25rem;left:1.25rem;z-index:50;background:#25D366;color:#fff;padding:.7rem 1.4rem;border-radius:999px;font-weight:600;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.25)}
 .wa-float:hover{filter:brightness(1.08)}
 </style>
@@ -94,7 +99,7 @@ nav,header,section,footer{position:relative;z-index:1}
   <header class="hero">
     <h1>مارين مجدي</h1>
     <p>مصمم ومطور ويب. <span id="typer">باعمل مواقع بسيطة وسريعة وسهلة الاستخدام.</span><span class="type-cursor">|</span></p>
-    <a class="btn" href="#contact">كلمني على مشروعك</a>
+    <a class="btn" href="#contact">كلمني على مشروعك</a> <button class="btn btn-ghost" id="helloBtn" type="button">🎙️ اسمع ترحيب مارين</button>
   </header>
 
   <section class="stats" id="stats">
@@ -129,6 +134,17 @@ nav,header,section,footer{position:relative;z-index:1}
     </div>
   </section>
 
+  <section id="offer" style="text-align:center">
+    <h2>عرض خاص 🎁</h2>
+    <p style="color:var(--muted)">خصم لأول ٥ عملاء يحجزوا قبل نهاية العرض</p>
+    <div class="countdown" id="cd">
+      <div><span id="cdD">٠</span><small>يوم</small></div>
+      <div><span id="cdH">٠</span><small>ساعة</small></div>
+      <div><span id="cdM">٠</span><small>دقيقة</small></div>
+      <div><span id="cdS">٠</span><small>ثانية</small></div>
+    </div>
+  </section>
+
   <section id="reviews">
     <h2>آراء العملاء</h2>
     <figure class="testimonial" style="margin-inline:0">
@@ -160,6 +176,7 @@ nav,header,section,footer{position:relative;z-index:1}
       <button class="btn" type="submit">ابعت رأيك</button>
       <small>هيتفتح واتساب برسالة جاهزة، وهنشر رأيك بعد المراجعة.</small>
     </form>
+    <div style="text-align:center;margin-top:2rem"><button class="btn" id="confettiBtn" type="button">عجبك الموقع؟ دوس هنا 🎉</button></div>
     <script>
     document.getElementById("reviewForm").addEventListener("submit",function(e){
       e.preventDefault();
@@ -316,6 +333,40 @@ if(window.matchMedia("(hover:hover)").matches){
   card.addEventListener("mouseleave",function(){card.style.transform=""});
  });
 }
+
+var helloBtn=document.getElementById("helloBtn");
+if(helloBtn){helloBtn.addEventListener("click",function(){
+ var a=new Audio("welcome.ogg");
+ a.play().catch(function(){helloBtn.textContent="الترحيب لسه بيترفع 😄"});
+});}
+var OFFER_END=new Date("2026-12-01T23:59:59");
+var cdD=document.getElementById("cdD");
+if(cdD){
+ var cdT=setInterval(function(){
+  var diff=OFFER_END-new Date();
+  if(diff<=0){clearInterval(cdT);
+   document.getElementById("cd").innerHTML="<p style='color:var(--accent);font-weight:700'>العرض خلص، تابعنا لعروض جديدة</p>";return}
+  var d=Math.floor(diff/86400000),h=Math.floor(diff/3600000)%24,m=Math.floor(diff/60000)%60,s=Math.floor(diff/1000)%60;
+  cdD.textContent=toAr(d);document.getElementById("cdH").textContent=toAr(h);
+  document.getElementById("cdM").textContent=toAr(m);document.getElementById("cdS").textContent=toAr(s);
+ },1000);
+}
+(function(){
+ var btn=document.getElementById("confettiBtn");if(!btn)return;
+ btn.addEventListener("click",function(){
+  var c=document.createElement("canvas");c.style.cssText="position:fixed;inset:0;z-index:9998;pointer-events:none";document.body.appendChild(c);
+  var x=c.getContext("2d");c.width=innerWidth;c.height=innerHeight;
+  var colors=["#2D5BFF","#7C9BFF","#25D366","#FFB020","#FF5C8A"],ps=[];
+  for(var i=0;i<160;i++)ps.push({x:innerWidth/2,y:innerHeight*.6,vx:(Math.random()-.5)*14,vy:Math.random()*-12-2,s:Math.random()*7+3,c:colors[i%5],r:Math.random()*6,vr:(Math.random()-.5)*.3,l:1});
+  var start=performance.now();
+  (function loop(t){
+   var el=(t-start)/1000;x.clearRect(0,0,c.width,c.height);
+   ps.forEach(function(p){p.x+=p.vx;p.y+=p.vy;p.vy+=.28;p.r+=p.vr;p.l-=.008;
+    x.save();x.translate(p.x,p.y);x.rotate(p.r);x.globalAlpha=Math.max(p.l,0);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);x.restore();});
+   if(el<3)requestAnimationFrame(loop);else c.remove();
+  })(start);
+ });
+})();
 </script>
 </body>
 </html>
