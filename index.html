@@ -11,25 +11,7 @@
 <meta property="og:description" content="مواقع ومتاجر إلكترونية بسيطة وسريعة وسهلة الاستخدام.">
 <meta property="og:locale" content="ar_EG">
 <meta property="og:image" content="https://marinmagdy66-commits.github.io/marin/preview.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"مارين مجدي","jobTitle":"مصمم ومطور ويب","email":"marinmagdy2@gmail.com"}
-var rootEl=document.documentElement,tBtn=document.getElementById("themeBtn");
-function setTheme(t){
-  if(t==="light"){rootEl.setAttribute("data-theme","light");tBtn.textContent="🌙"}
-  else{rootEl.removeAttribute("data-theme");tBtn.textContent="☀️"}
-  try{localStorage.setItem("marin-theme",t)}catch(e){}
-}
-var savedTheme=null;try{savedTheme=localStorage.getItem("marin-theme")}catch(e){}
-setTheme(savedTheme==="light"?"light":"dark");
-tBtn.addEventListener("click",function(){setTheme(rootEl.getAttribute("data-theme")==="light"?"dark":"light")});
-var revealEls=document.querySelectorAll("section h2,.project,.testimonial,.stat");
-revealEls.forEach(function(el){el.classList.add("reveal")});
-var rObs=new IntersectionObserver(function(entries){
-  entries.forEach(function(en){
-    if(en.isIntersecting){en.target.classList.add("in");rObs.unobserve(en.target)}
-  });
-},{threshold:.15});
-revealEls.forEach(function(el){rObs.observe(el)});
-</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"مارين مجدي","jobTitle":"مصمم ومطور ويب","email":"marinmagdy2@gmail.com"}</script>
 <title>مارين مجدي – مصمم ومطور ويب</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@500;700&family=IBM+Plex+Sans+Arabic:wght@400;500&display=swap">
 <style>
@@ -250,6 +232,24 @@ if(REVIEW_FORM_URL){
     });
   }
 }
+
+var rootEl=document.documentElement,tBtn=document.getElementById("themeBtn");
+function setTheme(t){
+  if(t==="light"){rootEl.setAttribute("data-theme","light");tBtn.textContent="🌙"}
+  else{rootEl.removeAttribute("data-theme");tBtn.textContent="☀️"}
+  try{localStorage.setItem("marin-theme",t)}catch(e){}
+}
+var savedTheme=null;try{savedTheme=localStorage.getItem("marin-theme")}catch(e){}
+setTheme(savedTheme==="light"?"light":"dark");
+tBtn.addEventListener("click",function(){setTheme(rootEl.getAttribute("data-theme")==="light"?"dark":"light")});
+var revealEls=document.querySelectorAll("section h2,.project,.testimonial,.stat");
+revealEls.forEach(function(el){el.classList.add("reveal")});
+var rObs=new IntersectionObserver(function(entries){
+  entries.forEach(function(en){
+    if(en.isIntersecting){en.target.classList.add("in");rObs.unobserve(en.target)}
+  });
+},{threshold:.15});
+revealEls.forEach(function(el){rObs.observe(el)});
 </script>
 </body>
 </html>
