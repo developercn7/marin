@@ -126,16 +126,38 @@ details p{color:var(--muted);margin:.6rem 0 0}
 .reveal.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1!important;transform:none!important;transition:none}}
 </style>
+<style>
+#progressBar{position:fixed;top:0;right:0;left:0;height:3px;background:var(--accent);width:0;z-index:9999;transition:width .1s}
+.greet{color:var(--muted);font-size:1.05rem;margin:0 0 .4rem}
+#langBtn{background:none;border:1px solid var(--line);border-radius:999px;padding:.15rem .7rem;cursor:pointer;color:var(--ink);font:inherit;font-size:.85rem}
+.pricing{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-top:1.2rem}
+.tier{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:1.4rem 1.2rem;text-align:center;position:relative}
+.tier.hot{border-color:var(--accent)}
+.tier .badge{position:absolute;top:-12px;right:calc(50% - 45px);background:var(--accent);color:#fff;padding:2px 14px;border-radius:999px;font-size:.8rem}
+.tier .price{font-size:1.8rem;font-weight:700;color:var(--accent);margin:.4rem 0}
+.tier ul{list-style:none;padding:0;margin:.8rem 0;color:var(--muted);font-size:.95rem}
+.tier ul li{padding:.25rem 0}
+.tier ul li::before{content:"\2713 ";color:var(--accent);font-weight:700}
+.qr{display:block;margin:1rem auto 0;border-radius:12px;border:1px solid var(--line)}
+.social{display:flex;gap:18px;justify-content:center;margin-top:.7rem}
+.social a{text-decoration:none;font-size:1.5rem}
+#egg{position:fixed;inset:0;background:rgba(10,15,30,.85);display:none;align-items:center;justify-content:center;z-index:99999;text-align:center}
+#egg .box{background:var(--surface);border:1px solid var(--accent);border-radius:18px;padding:2rem;max-width:320px}
+#egg a{display:inline-block;margin-top:1rem;background:var(--accent);color:#fff;padding:.6rem 1.4rem;border-radius:999px;text-decoration:none}
+</style>
 </head>
 <body>
+<div id="progressBar"></div>
+<div id="egg"><div class="box"><h3>🤫 لقيت السر!</h3><p>دي لعبة سرية للي بيعرفوا الكود القديم</p><a href="games.html">العب دلوقتي 🎮</a></div></div>
 <div id="preloader"><span>M</span></div>
 <div class="wrap">
   <nav aria-label="التنقل">
     <a href="#about">نبذة</a><a href="#work">أعمالي</a><a href="#services">خدماتي</a><a href="#reviews">آراء</a><a href="#skills">مهاراتي</a><a href="#contact">تواصل</a><a href="games.html">ألعاب 🎮</a>
-<a href="reels.html">ريلز 🎬</a><a href="works.html">أعمالي 🖼️</a><button id="themeBtn" type="button" aria-label="تبديل المظهر">☀️</button>
+<a href="reels.html">ريلز 🎬</a><a href="works.html">أعمالي 🖼️</a><button id="themeBtn" type="button" aria-label="تبديل المظهر">☀️</button><button id="langBtn" type="button">EN</button>
   </nav>
 
   <header class="hero">
+    <p class="greet" id="greet"></p>
     <h1>مارين مجدي</h1>
     <p>مصمم ومطور ويب. <span id="typer">باعمل مواقع بسيطة وسريعة وسهلة الاستخدام.</span><span class="type-cursor">|</span></p>
     <a class="btn" href="#contact">كلمني على مشروعك</a> <button class="btn btn-ghost" id="helloBtn" type="button">🎙️ اسمع ترحيب مارين</button>
@@ -176,6 +198,15 @@ details p{color:var(--muted);margin:.6rem 0 0}
       <article class="project"><h3>موقع تعريفي</h3><p>موقع يعرّف بيك وبشغلك، سريع ومظبوط للموبايل.</p><small>يبدأ من ٥٠٠ جنيه</small></article>
       <article class="project"><h3>متجر إلكتروني</h3><p>متجر بعرض منتجاتك مع طلب سريع عبر واتساب.</p><small>يبدأ من ٥٠٠ جنيه</small></article>
       <article class="project"><h3>صفحة هبوط</h3><p>صفحة واحدة مركزة لمنتج أو حملة إعلانية.</p><small>يبدأ من ٥٠٠ جنيه</small></article>
+    </div>
+  </section>
+
+  <section id="pricing">
+    <h2 data-en="Packages">الباقات</h2>
+    <div class="pricing">
+      <div class="tier"><h3 data-en="Basic">أساسية</h3><div class="price" data-en="500 EGP">٥٠٠ جنيه</div><ul><li data-en="One-page site">صفحة واحدة</li><li data-en="WhatsApp button">زرار واتساب</li><li data-en="Delivery in 3 days">تسليم في ٣ أيام</li></ul></div>
+      <div class="tier hot"><span class="badge" data-en="Most popular">الأكثر طلبًا</span><h3 data-en="Plus">متقدمة</h3><div class="price" data-en="1000 EGP">١٠٠٠ جنيه</div><ul><li data-en="Up to 5 pages">لحد ٥ صفحات</li><li data-en="Work gallery">معرض أعمال</li><li data-en="Order form">فورم طلبات</li><li data-en="Delivery in 5 days">تسليم في ٥ أيام</li></ul></div>
+      <div class="tier"><h3 data-en="Pro">برو</h3><div class="price" data-en="2000 EGP">٢٠٠٠ جنيه</div><ul><li data-en="Full site + games">موقع كامل + ألعاب</li><li data-en="Reels page">صفحة ريلز</li><li data-en="Everything in other tiers">كل مميزات الباقات التانية</li><li data-en="A month of support">دعم شهر كامل</li></ul></div>
     </div>
   </section>
 
@@ -251,6 +282,8 @@ details p{color:var(--muted);margin:.6rem 0 0}
       <a class="mail" href="mailto:marinmagdy2@gmail.com">marinmagdy2@gmail.com</a>
       <a class="btn" href="https://wa.me/201276239331" target="_blank" rel="noopener">كلمني على واتساب</a>
     </div>
+    <img class="qr" src="qrcode.png" alt="QR الموقع" width="140" height="140" loading="lazy">
+    <p style="color:var(--muted);font-size:.85rem">امسح الكود وشارك الموقع مع صحابك</p>
   </section>
 
   <section id="faq">
@@ -276,7 +309,7 @@ details p{color:var(--muted);margin:.6rem 0 0}
     </form>
   </section>
 
-  <footer>© <span id="yr">2026</span> مارين مجدي — اتعمل بـ ❤️ في مصر<br><span id="visitors" style="display:none">عدد الزيارات: <b id="visCount"></b></span></footer>
+  <footer>© <span id="yr">2026</span> مارين مجدي — اتعمل بـ ❤️ في مصر<br><span id="visitors" style="display:none">عدد الزيارات: <b id="visCount"></b></span><div class="social"><a href="https://wa.me/201276239331" target="_blank" rel="noopener" aria-label="واتساب">💬</a><a href="mailto:marinmagdy2@gmail.com" aria-label="إيميل">✉️</a></div></footer>
 </div>
 <a class="wa-float" href="https://wa.me/201276239331?text=%D9%85%D8%B3%D8%A7%D8%A1%20%D8%A7%D9%84%D8%AE%D9%8A%D8%B1%20%D9%85%D8%A7%D8%B1%D9%8A%D9%86%D8%8C%20%D8%B9%D9%86%D8%AF%D9%8A%20%D9%81%D9%83%D8%B1%D8%A9%20%D9%85%D8%B4%D8%B1%D9%88%D8%B9" target="_blank" rel="noopener">واتساب</a>
 <script>
@@ -501,5 +534,43 @@ if(of){of.addEventListener("submit",function(e){
 <button id="sndBtn" type="button" aria-label="تشغيل أو كتم الترحيب">🔊</button>
 <button id="topBtn" type="button" aria-label="ارجع لفوق">⬆️</button>
 </div>
+<script>
+// time greeting
+(function(){var h=new Date().getHours(),g=document.getElementById("greet");if(!g)return;
+var t=h<5?"سهران يا وحش 🌃":h<12?"صباح الفل ☀️":h<17?"نهارك سعيد 🌤":"مساء الخير 🌙";
+g.textContent=t;})();
+// reading progress
+(function(){var b=document.getElementById("progressBar");if(!b)return;
+addEventListener("scroll",function(){var d=document.documentElement,m=d.scrollHeight-innerHeight;
+b.style.width=(m>0?(scrollY/m*100):0)+"%"},{passive:true});})();
+// konami easter egg
+(function(){var k=["ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","b","a"],i=0;
+addEventListener("keydown",function(e){var k2=e.key.length===1?e.key.toLowerCase():e.key;
+i=(k2===k[i])?i+1:0;if(i===k.length){i=0;document.getElementById("egg").style.display="flex";}});
+document.getElementById("egg").addEventListener("click",function(){this.style.display="none";});})();
+// AR/EN toggle
+(function(){
+var TR=[
+["nav a[href='#about']","About"],["nav a[href='#work']","Work"],["nav a[href='#services']","Services"],
+["nav a[href='#reviews']","Reviews"],["nav a[href='#skills']","Skills"],["nav a[href='#contact']","Contact"],
+["nav a[href='games.html']","Games 🎮"],["nav a[href='reels.html']","Reels 🎬"],["nav a[href='works.html']","Gallery 🖼️"],
+[".hero h1","Marin Magdi"],
+["#stats .stat:nth-child(1) .lbl","Projects done"],["#stats .stat:nth-child(2) .lbl","Happy clients"],["#stats .stat:nth-child(3) .lbl","Avg reply (hrs)"],
+["#about h2","About me"],["#work h2","My work"],["#services h2","Services"],["#offer h2","Special offer 🎁"],
+["#reviews h2","Client reviews"],["#skills h2","My skills"],["#contact h2","Contact me"],["#faq h2","FAQ"],["#order h2","Order a service"]
+];
+TR.forEach(function(t){var el=document.querySelector(t[0]);if(el&&!el.dataset.ar)el.dataset.ar=el.innerHTML;});
+document.querySelectorAll("[data-en]").forEach(function(el){if(!el.dataset.ar)el.dataset.ar=el.innerHTML;});
+var heroP=document.querySelector(".hero p:not(.greet)");if(heroP)heroP.dataset.ar=heroP.innerHTML;
+var en=false;
+document.getElementById("langBtn").addEventListener("click",function(){
+en=!en;document.documentElement.dir=en?"ltr":"rtl";document.documentElement.lang=en?"en":"ar";
+this.textContent=en?"عربي":"EN";
+TR.forEach(function(t){var el=document.querySelector(t[0]);if(el)el.innerHTML=en?t[1]:el.dataset.ar;});
+document.querySelectorAll("[data-en]").forEach(function(el){el.innerHTML=en?el.dataset.en:el.dataset.ar;});
+if(heroP)heroP.innerHTML=en?"Web designer &amp; developer. I build simple, fast, easy-to-use websites.":heroP.dataset.ar;
+});
+})();
+</script>
 </body>
 </html>
