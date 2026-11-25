@@ -170,9 +170,29 @@ details p{color:var(--muted);margin:.6rem 0 0}
 #invite button{margin-top:1.2rem;background:var(--accent);color:#0F1730;border:none;border-radius:999px;padding:.65rem 1.8rem;font:inherit;font-weight:700;cursor:pointer}
 #invite .seal{font-size:2.4rem;animation:pulse 1.5s infinite}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem;margin-top:1.5rem}
+.qcard{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:1rem 1.1rem;text-align:center}
+.qcard h3{font-size:1.05rem;margin-bottom:.4rem}
+.qcard p{margin:.3rem 0}
+.qbig{font-size:2rem;font-weight:700;font-family:"Reem Kufi",sans-serif}
+.qmuted{color:var(--muted);font-size:.88rem}
+.pbtn{display:inline-block;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:.35rem .85rem;margin:.2rem;cursor:pointer;font:inherit;font-size:.9rem;transition:.15s}
+.pbtn:hover{border-color:var(--accent)}
+.pbtn:disabled{opacity:.45;cursor:default}
+.pbtn.acc{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.qbar{height:8px;border-radius:99px;background:var(--bg);overflow:hidden;margin:.15rem 0 .45rem}
+.qbar i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .4s}
+.qrow{display:flex;justify-content:space-between;font-size:.92rem}
+.qinp{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;color:var(--ink);padding:.55rem .8rem;font:inherit;font-size:.95rem;margin:.2rem 0}
+.qres{min-height:1.4rem;font-size:.95rem}
+.qmsg{border:1px dashed var(--line);border-radius:10px;padding:.5rem .7rem;margin:.35rem 0;font-size:.92rem}
+.qmsg b{color:var(--accent)}
+.qlock{font-size:1.6rem}
+
 </style>
 </head>
 <body>
+<main id="mainContent">
 <div id="progressBar"></div>
 <div id="egg"><div class="box"><h3>🤫 لقيت السر!</h3><p>دي لعبة سرية للي بيعرفوا الكود القديم</p><a href="games.html">العب دلوقتي 🎮</a></div></div>
 <div id="invite"><div class="card">
@@ -188,7 +208,7 @@ details p{color:var(--muted);margin:.6rem 0 0}
 <div class="wrap">
   <nav aria-label="التنقل">
     <a href="#about">نبذة</a><a href="#work">أعمالي</a><a href="#services">خدماتي</a><a href="#reviews">آراء</a><a href="#skills">مهاراتي</a><a href="#contact">تواصل</a><a href="games.html">ألعاب 🎮</a>
-<a href="reels.html">ريلز 🎬</a><a href="works.html">أعمالي 🖼️</a><a href="chat.html">شات 💬</a><a href="sticker.html">ستيكرز 😂</a><button id="themeBtn" type="button" aria-label="تبديل المظهر">☀️</button><button id="langBtn" type="button">EN</button>
+<a href="reels.html">ريلز 🎬</a><a href="works.html">أعمالي 🖼️</a><a href="chat.html">شات 💬</a><a href="sticker.html">ستيكرز 😂</a><a href="q3da.html">القعدة 😂</a><a href="blog.html">مدونة ✍️</a><button id="themeBtn" type="button" aria-label="تبديل المظهر">☀️</button><button id="langBtn" type="button">EN</button>
   </nav>
 
   <header class="hero">
@@ -206,12 +226,12 @@ details p{color:var(--muted);margin:.6rem 0 0}
     </div>
   </section>
 
-  <section id="about">
+  <section class="reveal" id="about">
     <h2>نبذة عني</h2>
     <p class="about">اشتغلت على مواقع ومتاجر ومشاريع صغيرة لعملاء في مصر والخليج. بحب أبدأ بفهم الفكرة، وبعدين أبني حاجة واضحة تخدم الزائر وتحقق هدف صاحب المشروع.</p>
   </section>
 
-  <section id="work">
+  <section class="reveal" id="work">
     <h2>أعمالي</h2>
     <div class="projects">
       <article class="project"><h3>متجر الورد</h3><p>متجر إلكتروني لمحل ورد مع طلب سريع عبر واتساب.</p><small>تصميم وتطوير</small></article>
@@ -227,7 +247,7 @@ details p{color:var(--muted);margin:.6rem 0 0}
   </section>
 
 
-  <section id="services">
+  <section class="reveal" id="services">
     <h2>خدماتي</h2>
     <div class="projects">
       <article class="project"><h3>موقع تعريفي</h3><p>موقع يعرّف بيك وبشغلك، سريع ومظبوط للموبايل.</p><small>يبدأ من ٥٠٠ جنيه</small></article>
@@ -236,7 +256,7 @@ details p{color:var(--muted);margin:.6rem 0 0}
     </div>
   </section>
 
-  <section id="pricing">
+  <section class="reveal" id="pricing">
     <h2 data-en="Packages">الباقات</h2>
     <div class="pricing">
       <div class="tier"><h3 data-en="Basic">أساسية</h3><div class="price" data-en="500 EGP">٥٠٠ جنيه</div><ul><li data-en="One-page site">صفحة واحدة</li><li data-en="WhatsApp button">زرار واتساب</li><li data-en="Delivery in 3 days">تسليم في ٣ أيام</li></ul></div>
@@ -256,7 +276,7 @@ details p{color:var(--muted);margin:.6rem 0 0}
     </div>
   </section>
 
-  <section id="reviews">
+  <section class="reveal" id="reviews">
     <h2>آراء العملاء</h2>
     <figure class="testimonial" style="margin-inline:0">
       <img src="data:image/jpeg;base64,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" alt="محمود أبو لحية" width="84" height="84">
@@ -311,7 +331,7 @@ details p{color:var(--muted);margin:.6rem 0 0}
 
   <div class="marquee" dir="ltr"><div class="marquee-track"><span>محمود أبو لحية ✦</span><span>مؤمن الديب ✦</span><span>الديزل ✦</span><span>عطية ✦</span><span>فادي ✦</span><span>بيجو ✦</span><span>محمود أبو لحية ✦</span><span>مؤمن الديب ✦</span><span>الديزل ✦</span><span>عطية ✦</span><span>فادي ✦</span><span>بيجو ✦</span></div></div>
 
-    <section id="wall" style="text-align:center">
+    <section class="reveal" id="wall" style="text-align:center">
     <h2>سيب بصمتك ✋</h2>
     <p style="color:var(--muted)">اكتب اسمك وخليه محفور في الحيطة مع باقي الزوار</p>
     <form id="wallForm">
@@ -322,14 +342,30 @@ details p{color:var(--muted);margin:.6rem 0 0}
     <div class="wall-board" id="wallBoard"></div>
   </section>
 
-  <section id="skills">
+
+  <section class="reveal" id="skills">
     <h2>مهاراتي</h2>
     <ul class="skills">
       <li>HTML و CSS</li><li>JavaScript</li><li>React</li><li>تصميم الواجهات</li><li>تحسين الأداء</li><li>محركات البحث</li>
     </ul>
   </section>
 
-  <section id="contact" class="contact">
+  
+<section id="levels"><h2>مستوى مهاراتي</h2><div id="lvList"></div></section>
+<section id="process"><h2>بشتغل إزاي؟</h2><ol class="proc">
+<li><b>فهم الفكرة</b><br>بسمعك وأحدد الهدف والجمهور.</li>
+<li><b>التصميم</b><br>شكل واضح بتشوفه قبل التنفيذ.</li>
+<li><b>التطوير</b><br>كود سريع ومظبوط على كل الشاشات.</li>
+<li><b>التسليم</b><br>تسليم + جولة تعديلات مجانية.</li></ol></section>
+<section class="reveal" id="quote"><h2>اطلب عرض سعر سريع</h2>
+<div class="x-live" id="xLive"><i></i><span id="xLiveTxt"></span></div>
+<form id="qtForm"><input id="qtName" placeholder="اسمك" required>
+<select id="qtType"><option>موقع تعريفي</option><option>متجر إلكتروني</option><option>صفحة هبوط</option><option>حاجة تانية</option></select>
+<input id="qtBudget" type="number" min="0" placeholder="ميزانيتك بالجنيه (اختياري)">
+<textarea id="qtMsg" rows="3" placeholder="احكيلي عن فكرتك..."></textarea>
+<button class="btn" type="submit">ابعت على واتساب 💬</button></form></section>
+
+  <section class="reveal" id="contact" class="contact">
     <h2>تواصل معي</h2>
     <p>ابعتلي فكرتك وهرد عليك في خلال يوم.</p>
     <div class="actions">
@@ -340,7 +376,7 @@ details p{color:var(--muted);margin:.6rem 0 0}
     <p style="color:var(--muted);font-size:.85rem">امسح الكود وشارك الموقع مع صحابك</p>
   </section>
 
-  <section id="faq">
+  <section class="reveal" id="faq">
     <h2>أسئلة شائعة</h2>
     <details><summary>الموقع بيخلص في قد إيه؟</summary><p>عادة من ٣ لـ ٧ أيام حسب حجم المشروع.</p></details>
     <details><summary>الأسعار بتبدأ من كام؟</summary><p>الخدمة بتبدأ من ٥٠٠ جنيه، والسعر النهائي بيتحدد حسب المطلوب.</p></details>
@@ -526,7 +562,7 @@ if(cdD){
  });
 })();
 
-var WS_IMGS=["client1.jpg","client2.jpg","client3.jpg","client4.jpg","client5.jpg","client6.jpg","client7.jpg","client8.jpg","client9.jpg","client10.jpg","client11.jpg"];
+var WS_IMGS=["client1.jpg","client2.jpg","client3.jpg","client4.jpg","client5.jpg","client6.jpg","client7.jpg","client8.jpg","client9.jpg","client10.jpg"];
 (function(){
 var wrap=document.getElementById("workSlides");if(!wrap)return;
 var done=0;
@@ -607,7 +643,7 @@ document.getElementById("egg").addEventListener("click",function(){this.style.di
 var TR=[
 ["nav a[href='#about']","About"],["nav a[href='#work']","Work"],["nav a[href='#services']","Services"],
 ["nav a[href='#reviews']","Reviews"],["nav a[href='#skills']","Skills"],["nav a[href='#contact']","Contact"],
-["nav a[href='games.html']","Games 🎮"],["nav a[href='reels.html']","Reels 🎬"],["nav a[href='works.html']","Gallery 🖼️"],["nav a[href='chat.html']","Chat 💬"],["nav a[href='sticker.html']","Stickers 😂"],
+["nav a[href='games.html']","Games 🎮"],["nav a[href='reels.html']","Reels 🎬"],["nav a[href='works.html']","Gallery 🖼️"],["nav a[href='chat.html']","Chat 💬"],["nav a[href='sticker.html']","Stickers 😂"],["nav a[href='q3da.html']","The Gang 😂"],["nav a[href='blog.html']","Blog ✍️"],
 [".hero h1","Marin Magdi"],
 ["#stats .stat:nth-child(1) .lbl","Projects done"],["#stats .stat:nth-child(2) .lbl","Happy clients"],["#stats .stat:nth-child(3) .lbl","Avg reply (hrs)"],
 ["#about h2","About me"],["#work h2","My work"],["#services h2","Services"],["#offer h2","Special offer 🎁"],
@@ -681,6 +717,324 @@ document.getElementById("wallForm").addEventListener("submit",function(e){
   iv.classList.remove("show");
   setTimeout(function(){iv.style.display="none";},450);
  });
+})();
+</script>
+
+
+</main>
+
+<!-- Professional enhancement pack: 20 client-side features -->
+<a class="pro-skip" href="#mainContent">تخطي إلى المحتوى</a>
+<div class="pro-tools" aria-label="أدوات سريعة">
+  <button type="button" id="proTop" title="العودة للأعلى" aria-label="العودة للأعلى">↑</button>
+  <button type="button" id="proFontDown" title="تصغير الخط" aria-label="تصغير الخط">A−</button>
+  <button type="button" id="proFontUp" title="تكبير الخط" aria-label="تكبير الخط">A+</button>
+  <button type="button" id="proContrast" title="تباين أعلى" aria-label="تبديل التباين">◐</button>
+</div>
+<div id="proToast" role="status" aria-live="polite"></div>
+<div id="proCommand" class="pro-overlay" aria-hidden="true">
+  <div class="pro-dialog" role="dialog" aria-modal="true" aria-labelledby="proCommandTitle">
+    <button type="button" class="pro-close" data-close="proCommand" aria-label="إغلاق">×</button>
+    <h2 id="proCommandTitle">التنقل السريع</h2>
+    <input id="proCommandSearch" type="search" placeholder="ابحث عن قسم أو إجراء..." autocomplete="off">
+    <div id="proCommandItems" class="pro-command-items">
+      <a href="#about">نبذة عني</a><a href="#work">أعمالي</a><a href="#services">خدماتي</a>
+      <a href="#pricing">الباقات</a><a href="#reviews">آراء العملاء</a><a href="#contact">تواصل</a>
+    </div>
+    <small>اختصار لوحة المفاتيح: Ctrl / ⌘ + K</small>
+  </div>
+</div>
+<div id="proProjectModal" class="pro-overlay" aria-hidden="true">
+  <div class="pro-dialog" role="dialog" aria-modal="true" aria-labelledby="proProjectTitle">
+    <button type="button" class="pro-close" data-close="proProjectModal" aria-label="إغلاق">×</button>
+    <h2 id="proProjectTitle">تفاصيل المشروع</h2><p id="proProjectText"></p>
+    <a class="btn" href="#contact" data-close-link>اطلب مشروعًا مشابهًا</a>
+  </div>
+</div>
+<style>
+/* 1 Skip link  2 sticky glass navigation  3 responsive nav */
+.pro-skip{position:fixed;top:-80px;right:12px;z-index:100001;background:var(--accent);color:var(--on-accent);padding:.6rem 1rem;border-radius:10px}
+.pro-skip:focus{top:12px}
+body.pro-enhanced nav{position:sticky;top:0;z-index:100;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:.75rem 1rem}
+body.pro-enhanced nav a{font-size:.94rem}
+.pro-tools{position:fixed;right:14px;bottom:14px;z-index:100;display:grid;gap:7px}
+.pro-tools button{width:42px;height:42px;border-radius:13px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:700;box-shadow:0 5px 18px #0002;cursor:pointer}
+#proTop{display:none}
+#proToast{position:fixed;bottom:18px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--ink);color:var(--bg);padding:.65rem 1rem;border-radius:12px;z-index:100005;transition:.25s;max-width:90%;text-align:center}
+#proToast.show{opacity:1;transform:translate(-50%,0)}
+/* 4 accessible focus  5 high contrast  6 font sizing  7 reduced motion */
+body.pro-high-contrast{--bg:#000!important;--surface:#101010!important;--ink:#fff!important;--muted:#f0f0f0!important;--line:#fff!important;--accent:#ffdf00!important;--on-accent:#000!important}
+body.pro-large-text{font-size:1.18rem}
+body.pro-no-motion *,body.pro-no-motion *::before,body.pro-no-motion *::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+.pro-overlay{display:none;position:fixed;inset:0;z-index:100004;background:#050b1dcc;backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:1rem}
+.pro-overlay.open{display:flex}
+.pro-dialog{position:relative;width:min(560px,100%);max-height:85vh;overflow:auto;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:20px;padding:2rem;box-shadow:0 20px 70px #0006}
+.pro-dialog input{width:100%;padding:.8rem 1rem;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;margin:.7rem 0}
+.pro-close{position:absolute;left:12px;top:8px;border:0;background:transparent;color:var(--ink);font-size:2rem;cursor:pointer}
+.pro-command-items{display:grid;gap:.5rem}
+.pro-command-items a{padding:.55rem .8rem;border:1px solid var(--line);border-radius:9px;text-decoration:none}
+.pro-command-items a:hover{border-color:var(--accent);background:var(--bg)}
+.pro-project-tools{display:flex;gap:.7rem;flex-wrap:wrap;margin:0 0 1rem}
+.pro-project-tools input,.pro-project-tools select{min-width:180px;flex:1;padding:.7rem 1rem;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit}
+.project{transition:transform .2s,box-shadow .2s;cursor:pointer}
+.project:hover{transform:translateY(-4px);box-shadow:0 12px 28px #0001}
+.pro-status{display:inline-flex;align-items:center;gap:.5rem;border:1px solid var(--line);border-radius:999px;padding:.25rem .8rem;color:var(--muted);font-size:.9rem}
+.pro-dot{width:8px;height:8px;border-radius:50%;background:#16a34a;display:inline-block}
+.pro-estimator{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:1.2rem;margin-top:1.2rem}
+.pro-estimator select{padding:.6rem;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink);font:inherit}
+.pro-estimate-result{font-weight:700;color:var(--accent);font-size:1.2rem;margin:.6rem 0}
+.pro-action-row{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem}
+.pro-action-row button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:.5rem .9rem}
+@media(max-width:620px){body.pro-enhanced nav{gap:.55rem;justify-content:center}body.pro-enhanced nav a{font-size:.82rem}.pro-tools{right:8px;bottom:8px}.pro-tools button{width:38px;height:38px}}
+@media print{nav,.pro-tools,.wa-float,#preloader,#progressBar,.fab-stack,#proToast{display:none!important}body{background:#fff!important;color:#000!important}.project,.stat,.tier{break-inside:avoid;box-shadow:none!important}}
+
+/* ===== v2 additions ===== */
+#xSpot{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity .4s;background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),color-mix(in srgb,var(--accent) 14%,transparent),transparent 70%)}
+#xSpot.on{opacity:1}
+body.pro-enhanced nav{transition:transform .35s ease}
+body.pro-enhanced nav.x-hide{transform:translateY(-110%)}
+.x-dock{position:fixed;right:14px;top:45%;transform:translateY(-50%);z-index:90;display:grid;gap:7px}
+.x-dock button{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;font-size:1.05rem;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.x-dock button[hidden]{display:none}
+.x-sw{position:absolute;right:48px;top:0;display:none;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px}
+.x-sw.open{display:flex}
+.x-sw i{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2px solid var(--surface);box-shadow:0 0 0 1px var(--line)}
+.x-dots{position:fixed;left:12px;top:50%;transform:translateY(-50%);z-index:90;display:grid;gap:10px}
+.x-dots a{width:11px;height:11px;border-radius:50%;background:var(--line);display:block;position:relative;transition:transform .2s,background .2s}
+.x-dots a.on{background:var(--accent);transform:scale(1.5)}
+.x-dots a:hover::after{content:attr(data-t);position:absolute;left:20px;top:-6px;white-space:nowrap;background:var(--surface);border:1px solid var(--line);padding:0 .6rem;border-radius:8px;font-size:.8rem}
+@media(max-width:900px){.x-dots{display:none}.x-dock{top:auto;bottom:70px;transform:none}.x-dock button{width:36px;height:36px}}
+.x-pct{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:60;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:0 .8rem;font-size:.8rem;color:var(--muted);display:none}
+.x-fav{position:absolute;top:.7rem;left:.7rem;border:0;background:none;cursor:pointer;font-size:1.2rem;color:var(--muted);font-family:inherit}
+.x-fav.on{color:#e11d48}
+#work .project{position:relative}
+.lv-row{display:grid;grid-template-columns:9rem 1fr 3rem;gap:.8rem;align-items:center;margin:.7rem 0}
+.lv-bar{height:10px;border-radius:99px;background:var(--line);overflow:hidden}
+.lv-bar b{display:block;height:100%;width:0;background:var(--accent);border-radius:99px;transition:width 1.2s ease}
+.proc{list-style:none;padding:0;margin:0;display:grid;gap:1rem;counter-reset:s}
+.proc li{counter-increment:s;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:1rem 1.2rem 1rem 1rem;position:relative;padding-right:3.6rem}
+.proc li::before{content:counter(s);position:absolute;right:1rem;top:1rem;width:2rem;height:2rem;border-radius:50%;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-weight:700}
+.proc b{font-family:"Reem Kufi",Tahoma,sans-serif;font-size:1.15rem}
+@media(min-width:700px){.proc{grid-template-columns:repeat(4,1fr)}}
+.x-live{display:inline-flex;gap:.5rem;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:.1rem 1rem;margin-bottom:1rem}
+.x-live i{width:9px;height:9px;border-radius:50%;background:#22c55e}.x-live.off i{background:#f59e0b}
+#qtForm{display:grid;gap:.8rem;max-width:36rem}
+#qtForm input,#qtForm select,#qtForm textarea,.x-faqbar input{width:100%;font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:.65rem .9rem}
+#qtForm button,.x-faqbar button{font:inherit;cursor:pointer;border:0;justify-self:start}
+.x-faqbar{display:flex;gap:.6rem;margin-bottom:1rem;max-width:36rem}
+.x-faqbar button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:0 1rem;white-space:nowrap}
+.hlink{opacity:0;margin-right:.5rem;text-decoration:none;color:var(--accent);font-size:.7em}
+h2:hover .hlink,.hlink:focus{opacity:1}
+#xToast{position:fixed;left:50%;top:70px;transform:translate(-50%,-20px);z-index:300;background:var(--ink);color:var(--bg);padding:.5rem 1.2rem;border-radius:999px;opacity:0;pointer-events:none;transition:.3s}
+#xToast.show{opacity:1;transform:translate(-50%,0)}
+.x-modal{position:fixed;inset:0;z-index:250;background:rgba(0,0,0,.55);display:none;place-items:center;padding:1rem}
+.x-modal.open{display:grid}
+.x-modal>div{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:1.5rem;max-width:26rem;width:100%}
+.x-modal kbd{background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:0 .5rem;font-family:monospace}
+.x-modal li{margin:.35rem 0;list-style:none}.x-modal ul{padding:0;margin:.8rem 0}
+#xNudge{position:fixed;right:14px;bottom:80px;z-index:120;max-width:18rem;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:1rem;display:none;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+#xNudge.on{display:block}
+@media(prefers-reduced-motion:reduce){.lv-bar b{transition:none}}
+@media print{.x-dock,.x-dots,.x-pct,#xNudge,#xSpot{display:none!important}}
+
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+.reveal.vis{opacity:1;transform:none}
+#topBtn{position:fixed;bottom:1.2rem;left:1.2rem;z-index:60;background:var(--accent);color:var(--on-accent);border:none;border-radius:50%;width:48px;height:48px;font-size:1.3rem;cursor:pointer;opacity:0;pointer-events:none;transition:.25s;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+#topBtn.show{opacity:1;pointer-events:auto}
+
+</style>
+<script>
+(function(){
+"use strict";
+var $=function(id){return document.getElementById(id);};
+var toastTimer;
+function toast(msg){var t=$("proToast");if(!t)return;t.textContent=msg;t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove("show");},2400);}
+document.body.classList.add("pro-enhanced");
+
+/* 8 scroll-to-top */
+var topBtn=$("proTop");
+window.addEventListener("scroll",function(){if(topBtn)topBtn.style.display=window.scrollY>450?"block":"none";},{passive:true});
+if(topBtn)topBtn.addEventListener("click",function(){window.scrollTo({top:0,behavior:"smooth"});});
+
+/* 9 font controls */
+var fontScale=1;
+function setFont(){document.documentElement.style.fontSize=(16*fontScale)+"px";}
+$("proFontUp").addEventListener("click",function(){fontScale=Math.min(1.25,fontScale+.05);setFont();});
+$("proFontDown").addEventListener("click",function(){fontScale=Math.max(.9,fontScale-.05);setFont();});
+
+/* 10 high contrast toggle */
+$("proContrast").addEventListener("click",function(){document.body.classList.toggle("pro-high-contrast");toast("تم تحديث وضع التباين");});
+
+/* 11 reduced-motion toggle */
+var motionBtn=document.createElement("button");motionBtn.type="button";motionBtn.textContent="〰";motionBtn.title="تقليل الحركة";motionBtn.setAttribute("aria-label","تقليل الحركة");$("proTop").parentNode.appendChild(motionBtn);
+motionBtn.addEventListener("click",function(){document.body.classList.toggle("pro-no-motion");toast("تم تحديث إعدادات الحركة");});
+
+/* 12 active section navigation */
+if("IntersectionObserver" in window){
+ var sections=document.querySelectorAll("header[id],section[id]");
+ var navLinks=document.querySelectorAll("nav a[href^='#']");
+ var navObs=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting){navLinks.forEach(function(a){a.classList.toggle("pro-active",a.getAttribute("href")==="#"+entry.target.id);});}});},{rootMargin:"-25% 0px -65% 0px"});
+ sections.forEach(function(s){navObs.observe(s);});
+}
+
+/* 13 project search 14 category filter 15 project detail modal */
+var work=document.querySelector("#work .projects");
+if(work){
+ var cards=[].slice.call(work.querySelectorAll(".project"));
+ var tools=document.createElement("div");tools.className="pro-project-tools";
+ tools.innerHTML='<input type="search" id="proProjectSearch" placeholder="ابحث في المشاريع..." aria-label="ابحث في المشاريع"><select id="proProjectFilter" aria-label="تصفية المشاريع"><option value="all">كل المشاريع</option><option value="store">متاجر</option><option value="site">مواقع</option><option value="app">تطبيقات</option></select>';
+ work.parentNode.insertBefore(tools,work);
+ cards.forEach(function(card,i){card.dataset.kind=i===0?"store":i===1?"site":"app";card.setAttribute("tabindex","0");card.setAttribute("role","button");});
+ function filterProjects(){var q=$("proProjectSearch").value.trim().toLowerCase(),k=$("proProjectFilter").value;cards.forEach(function(c){var match=c.textContent.toLowerCase().includes(q)&&(k==="all"||c.dataset.kind===k);c.hidden=!match;});}
+ $("proProjectSearch").addEventListener("input",filterProjects);$("proProjectFilter").addEventListener("change",filterProjects);
+ cards.forEach(function(c){function open(){ $("proProjectTitle").textContent=c.querySelector("h3").textContent;$("proProjectText").textContent=c.querySelector("p").textContent+" — "+(c.querySelector("small")?c.querySelector("small").textContent:"");$("proProjectModal").classList.add("open");}
+ c.addEventListener("click",open);c.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();open();}});});
+}
+
+/* 16 modal close and escape handling */
+document.querySelectorAll("[data-close]").forEach(function(b){b.addEventListener("click",function(){$(b.dataset.close).classList.remove("open");});});
+document.querySelectorAll("[data-close-link]").forEach(function(a){a.addEventListener("click",function(){$("proProjectModal").classList.remove("open");});});
+document.querySelectorAll(".pro-overlay").forEach(function(o){o.addEventListener("click",function(e){if(e.target===o)o.classList.remove("open");});});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")document.querySelectorAll(".pro-overlay.open").forEach(function(o){o.classList.remove("open");});});
+
+/* 17 command palette and keyboard shortcut */
+function openCommand(){$("proCommand").classList.add("open");$("proCommandSearch").focus();}
+document.addEventListener("keydown",function(e){if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();openCommand();}});
+$("proCommandSearch").addEventListener("input",function(){var q=this.value.toLowerCase();$("proCommandItems").querySelectorAll("a").forEach(function(a){a.hidden=!a.textContent.toLowerCase().includes(q);});});
+$("proCommandItems").querySelectorAll("a").forEach(function(a){a.addEventListener("click",function(){$("proCommand").classList.remove("open");});});
+
+/* 18 copy email */
+var email="marinmagdy2@gmail.com";
+var copyBtn=document.createElement("button");copyBtn.type="button";copyBtn.textContent="نسخ البريد الإلكتروني";copyBtn.className="pro-copy-email";
+copyBtn.style.cssText="margin-top:.8rem;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:.55rem 1rem;font:inherit;cursor:pointer";
+var contact=document.querySelector("#contact .contact")||$("contact");
+if(contact)contact.appendChild(copyBtn);
+copyBtn.addEventListener("click",function(){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(email).then(function(){toast("تم نسخ البريد الإلكتروني");}).catch(function(){toast(email);});}else{toast(email);}});
+
+/* 19 share page */
+var shareBtn=document.createElement("button");shareBtn.type="button";shareBtn.textContent="مشاركة الموقع";shareBtn.className="pro-share";
+shareBtn.style.cssText=copyBtn.style.cssText;
+if(contact)contact.appendChild(shareBtn);
+shareBtn.addEventListener("click",function(){if(navigator.share){navigator.share({title:document.title,text:"شاهد معرض أعمال مارين مجدي",url:location.href}).catch(function(){});}else if(navigator.clipboard){navigator.clipboard.writeText(location.href).then(function(){toast("تم نسخ رابط الموقع");});}else toast(location.href);});
+
+/* 20 status, print, year, offline signal, service estimator */
+var status=document.createElement("p");status.className="pro-status";status.innerHTML='<span class="pro-dot"></span> متاح لاستقبال المشاريع';
+var hero=document.querySelector(".hero");if(hero)hero.appendChild(status);
+var printBtn=document.createElement("button");printBtn.type="button";printBtn.textContent="طباعة / حفظ PDF";printBtn.style.cssText=copyBtn.style.cssText;
+if(contact)contact.appendChild(printBtn);printBtn.addEventListener("click",function(){window.print();});
+var year=document.createElement("small");year.textContent=" © "+new Date().getFullYear()+" مارين مجدي — جميع الحقوق محفوظة";
+var footer=document.querySelector("footer");if(footer)footer.appendChild(year);
+function network(){if(!navigator.onLine)toast("أنت غير متصل بالإنترنت");}
+window.addEventListener("offline",network);
+var estimator=document.createElement("div");estimator.className="pro-estimator";
+estimator.innerHTML='<h3>حاسبة تكلفة مبدئية</h3><p>اختر نوع المشروع لمعرفة السعر الاسترشادي.</p><label for="proServiceType">نوع الخدمة </label><select id="proServiceType"><option value="500">صفحة هبوط — ٥٠٠ جنيه</option><option value="1000">موقع متعدد الصفحات — ١٠٠٠ جنيه</option><option value="2000">موقع متكامل — ٢٠٠٠ جنيه</option></select><p class="pro-estimate-result" id="proEstimate">السعر المبدئي: ٥٠٠ جنيه</p><small>السعر النهائي يتحدد بعد معرفة تفاصيل المشروع.</small>';
+var services=document.getElementById("services");if(services)services.appendChild(estimator);
+$("proServiceType").addEventListener("change",function(){var n=Number(this.value);$("proEstimate").textContent="السعر المبدئي: "+n.toLocaleString("ar-EG")+" جنيه";});
+})();
+</script>
+
+
+<div id="xSpot"></div><div id="xToast" role="status"></div>
+<div class="x-pct" id="xPct"></div>
+<nav class="x-dots" id="xDots" aria-label="أقسام الصفحة"></nav>
+<div class="x-dock">
+<div class="x-sw" id="xSw"></div>
+<button id="xPal" type="button" title="لون الموقع" aria-label="لون الموقع">🎨</button>
+<button id="xRead" type="button" title="اسمع النبذة" aria-label="اسمع النبذة">🔊</button>
+<button id="xKeys" type="button" title="اختصارات الكيبورد (?)" aria-label="الاختصارات">⌨️</button>
+<button id="xVcf" type="button" title="احفظ جهة الاتصال" aria-label="احفظ جهة الاتصال">📇</button>
+<button id="xInstall" type="button" title="ثبّت الموقع كتطبيق" aria-label="ثبّت التطبيق" hidden>📲</button></div>
+<div class="x-modal" id="xHelp"><div><h3>⌨️ اختصارات الكيبورد</h3><ul>
+<li><kbd>?</kbd> فتح القائمة دي</li><li><kbd>T</kbd> تبديل الوضع الليلي</li><li><kbd>W</kbd> أعمالي</li>
+<li><kbd>C</kbd> تواصل</li><li><kbd>H</kbd> لفوق</li><li><kbd>/</kbd> بحث في المشاريع</li><li><kbd>Ctrl+K</kbd> البحث السريع</li></ul>
+<button class="btn" type="button" id="xHelpX">تمام</button></div></div>
+<div id="xNudge"><p style="margin:0 0 .6rem">لسه محتار؟ ابعتلي فكرتك وهرد عليك بسرعة 👋</p>
+<a class="btn" href="#quote" id="xNudgeGo">اطلب عرض سعر</a> <button type="button" id="xNudgeX" class="btn btn-ghost" style="cursor:pointer;font:inherit">لاحقًا</button></div>
+<script>
+(function(){
+"use strict";
+var $=function(i){return document.getElementById(i)},ls={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+var ar=function(n){return String(n).replace(/\d/g,function(d){return"٠١٢٣٤٥٦٧٨٩"[d]})};
+var tt;function toast(m){var t=$("xToast");t.textContent=m;t.classList.add("show");clearTimeout(tt);tt=setTimeout(function(){t.classList.remove("show")},2600)}
+var fine=matchMedia("(hover:hover) and (pointer:fine)").matches,calm=matchMedia("(prefers-reduced-motion:reduce)").matches;
+/* 1 spotlight */
+if(fine&&!calm){var sp=$("xSpot");addEventListener("pointermove",function(e){sp.classList.add("on");sp.style.setProperty("--mx",e.clientX+"px");sp.style.setProperty("--my",e.clientY+"px")},{passive:true})}
+/* 2 3D tilt */
+if(fine&&!calm)document.querySelectorAll(".project,.stat").forEach(function(c){c.addEventListener("pointermove",function(e){var r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;c.style.transform="perspective(700px) rotateY("+x*8+"deg) rotateX("+-y*8+"deg)"});c.addEventListener("pointerleave",function(){c.style.transform=""})});
+/* 3 accent color picker */
+var cols=["#2D5BFF","#E11D74","#0E9F6E","#F97316","#8B5CF6"],sw=$("xSw");
+function setAcc(c){var h=c.slice(1),l=(parseInt(h.substr(0,2),16)*299+parseInt(h.substr(2,2),16)*587+parseInt(h.substr(4,2),16)*114)/1000;document.documentElement.style.setProperty("--accent",c);document.documentElement.style.setProperty("--on-accent",l>150?"#0F1730":"#FFFFFF");ls.set("x_acc",c)}
+cols.forEach(function(c){var i=document.createElement("i");i.style.background=c;i.setAttribute("role","button");i.setAttribute("aria-label","لون "+c);i.onclick=function(){setAcc(c);toast("تم تغيير اللون 🎨")};sw.appendChild(i)});
+$("xPal").onclick=function(){sw.classList.toggle("open")};
+if(ls.get("x_acc"))setAcc(ls.get("x_acc"));
+/* 4 favorites */
+var favs=[];try{favs=JSON.parse(ls.get("x_fav")||"[]")}catch(e){}
+document.querySelectorAll("#work .project").forEach(function(c){var t=c.querySelector("h3");if(!t)return;var n=t.textContent,b=document.createElement("button");b.type="button";b.className="x-fav";b.setAttribute("aria-label","أضف للمفضلة");
+function ui(){var on=favs.indexOf(n)>-1;b.classList.toggle("on",on);b.textContent=on?"♥":"♡"}ui();
+b.addEventListener("click",function(e){e.stopPropagation();var i=favs.indexOf(n);i>-1?favs.splice(i,1):favs.push(n);ls.set("x_fav",JSON.stringify(favs));ui();toast(i>-1?"اتشال من المفضلة":"اتضاف للمفضلة ♥")});
+b.addEventListener("keydown",function(e){e.stopPropagation()});c.appendChild(b)});
+/* 5 skill bars */
+var lv=[["HTML / CSS",95],["JavaScript",80],["تصميم الواجهات",85],["المتاجر الإلكترونية",80],["سرعة الأداء",90],["SEO",70]],L=$("lvList");
+lv.forEach(function(s){var r=document.createElement("div");r.className="lv-row";r.innerHTML="<span>"+s[0]+"</span><div class='lv-bar'><b data-w='"+s[1]+"'></b></div><span>"+ar(s[1])+"٪</span>";L.appendChild(r)});
+if("IntersectionObserver"in window){new IntersectionObserver(function(es,o){if(es[0].isIntersecting){o.disconnect();L.querySelectorAll("b").forEach(function(b){b.style.width=b.dataset.w+"%"})}}).observe(L)}else L.querySelectorAll("b").forEach(function(b){b.style.width=b.dataset.w+"%"});
+/* 6 live clock + availability (Cairo hours 10-23) */
+function live(){var h=+new Intl.DateTimeFormat("en-GB",{hour:"numeric",hour12:false,timeZone:"Africa/Cairo"}).format(new Date())%24,t=new Intl.DateTimeFormat("ar-EG",{hour:"numeric",minute:"2-digit",timeZone:"Africa/Cairo"}).format(new Date()),on=h>=10&&h<23;$("xLive").classList.toggle("off",!on);$("xLiveTxt").textContent=(on?"مارين متاح دلوقتي":"مارين خارج الشغل، هرد الصبح")+" — الوقت في القاهرة "+t}
+live();setInterval(live,30000);
+/* 7 quote → WhatsApp */
+$("qtForm").addEventListener("submit",function(e){e.preventDefault();var b=$("qtBudget").value,m="أهلاً مارين، أنا "+$("qtName").value+"\nعايز: "+$("qtType").value+(b?"\nالميزانية: "+b+" جنيه":"")+($("qtMsg").value?"\nالفكرة: "+$("qtMsg").value:"");open("https://wa.me/201276239331?text="+encodeURIComponent(m),"_blank","noopener")});
+/* 8 vCard */
+$("xVcf").onclick=function(){var v="BEGIN:VCARD\nVERSION:3.0\nFN:مارين مجدي\nTITLE:مصمم ومطور ويب\nTEL;TYPE=CELL:+201276239331\nEMAIL:marinmagdy2@gmail.com\nURL:"+location.href.split("#")[0]+"\nEND:VCARD",a=document.createElement("a");a.href=URL.createObjectURL(new Blob([v],{type:"text/vcard"}));a.download="marin-magdy.vcf";a.click();toast("اتحفظت جهة الاتصال 📇")};
+/* 9 read about aloud */
+var rd=$("xRead");rd.onclick=function(){if(!("speechSynthesis"in window))return toast("المتصفح مش بيدعم القراءة");if(speechSynthesis.speaking){speechSynthesis.cancel();rd.textContent="🔊";return}var p=document.querySelector("#about .about"),u=new SpeechSynthesisUtterance(p?p.textContent:"");u.lang="ar-EG";u.onend=function(){rd.textContent="🔊"};speechSynthesis.speak(u);rd.textContent="⏹"};
+/* 10 shortcuts + help modal */
+var hp=$("xHelp");$("xHelpX").onclick=function(){hp.classList.remove("open")};hp.addEventListener("click",function(e){if(e.target===hp)hp.classList.remove("open")});$("xKeys").onclick=function(){hp.classList.add("open")};
+function go(id){var s=$(id);s&&s.scrollIntoView({behavior:calm?"auto":"smooth"})}
+addEventListener("keydown",function(e){var t=e.target.tagName;if(/INPUT|TEXTAREA|SELECT/.test(t)||e.ctrlKey||e.metaKey||e.altKey)return;var k=e.key.toLowerCase();
+if(k==="?"||k==="؟")hp.classList.add("open");else if(k==="escape")hp.classList.remove("open");else if(k==="t"){var b=$("themeBtn");b&&b.click()}else if(k==="w")go("work");else if(k==="c")go("contact");else if(k==="h")scrollTo({top:0,behavior:"smooth"});else if(k==="/"){var s=$("proProjectSearch");if(s){e.preventDefault();go("work");s.focus()}}});
+/* 11 side dots 12 scroll % 13 nav auto-hide */
+var dots=$("xDots"),ids=["stats","about","work","services","pricing","reviews","skills","levels","process","quote","contact","faq"].filter(function(i){return $(i)}),da={};
+ids.forEach(function(i){var a=document.createElement("a"),h=$(i).querySelector("h2");a.href="#"+i;a.dataset.t=h?h.textContent:i;a.setAttribute("aria-label",a.dataset.t);dots.appendChild(a);da[i]=a});
+if("IntersectionObserver"in window){var so=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){Object.keys(da).forEach(function(k){da[k].classList.toggle("on",k===en.target.id)})}})},{rootMargin:"-40% 0px -55% 0px"});ids.forEach(function(i){so.observe($(i))})}
+var pc=$("xPct"),nv=document.querySelector("nav"),ly=0;
+addEventListener("scroll",function(){var y=scrollY,m=document.documentElement.scrollHeight-innerHeight,p=m>0?Math.round(y/m*100):0;pc.style.display=y>120?"block":"none";pc.textContent=ar(p)+"٪";if(nv){nv.classList.toggle("x-hide",y>ly&&y>260&&!nv.contains(document.activeElement));}ly=y},{passive:true});
+/* 14 heading anchors */
+document.querySelectorAll("section[id] > h2").forEach(function(h){var a=document.createElement("a");a.className="hlink";a.href="#"+h.parentNode.id;a.textContent="#";a.setAttribute("aria-label","انسخ رابط القسم");a.onclick=function(){var u=location.href.split("#")[0]+a.getAttribute("href");navigator.clipboard&&navigator.clipboard.writeText(u).then(function(){toast("اتنسخ رابط القسم 🔗")})};h.appendChild(a)});
+/* 15 FAQ search + expand all */
+var fq=$("faq");if(fq){var bar=document.createElement("div");bar.className="x-faqbar";bar.innerHTML='<input type="search" placeholder="ابحث في الأسئلة..." aria-label="ابحث في الأسئلة"><button type="button">فتح الكل</button>';fq.querySelector("h2").after(bar);var ds=fq.querySelectorAll("details"),op=false;
+bar.firstChild.addEventListener("input",function(){var q=this.value.trim().toLowerCase();ds.forEach(function(d){d.hidden=!d.textContent.toLowerCase().includes(q)})});
+bar.lastChild.onclick=function(){op=!op;ds.forEach(function(d){d.open=op});this.textContent=op?"قفل الكل":"فتح الكل"}}
+/* 16 PWA install */
+var dp;addEventListener("beforeinstallprompt",function(e){e.preventDefault();dp=e;$("xInstall").hidden=false});
+$("xInstall").onclick=function(){if(dp){dp.prompt();dp=null;$("xInstall").hidden=true}};
+/* 17 welcome back */
+var vn=+(ls.get("x_visits")||0)+1,last=ls.get("x_last");ls.set("x_visits",vn);ls.set("x_last",Date.now());
+setTimeout(function(){toast(vn===1?"أهلاً بيك لأول مرة 👋":"رجعت تاني! دي زيارتك رقم "+ar(vn)+" ❤️")},2200);
+/* 18 tab title when hidden */
+var ot=document.title;document.addEventListener("visibilitychange",function(){document.title=document.hidden?"وحشتنا! ارجع 👋":ot});
+/* 19 idle nudge (once per session) */
+var nd=$("xNudge"),it;function arm(){clearTimeout(it);if(sessionStorage.getItem("x_nd"))return;it=setTimeout(function(){nd.classList.add("on");try{sessionStorage.setItem("x_nd","1")}catch(e){}},75000)}
+["scroll","pointermove","keydown","touchstart"].forEach(function(ev){addEventListener(ev,arm,{passive:true})});arm();
+$("xNudgeX").onclick=$("xNudgeGo").onclick=function(){nd.classList.remove("on")};
+/* 20 lazy-load all images */
+document.querySelectorAll("img:not([loading])").forEach(function(i){i.loading="lazy";i.decoding="async"});
+})();
+</script>
+<script>
+(function(){
+  var els=document.querySelectorAll(".reveal");
+  if("IntersectionObserver" in window){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("vis");io.unobserve(e.target);}});
+    },{threshold:.12});
+    els.forEach(function(el){io.observe(el);});
+  }else{els.forEach(function(el){el.classList.add("vis");});}
+  var b=document.createElement("button");
+  b.id="topBtn";b.setAttribute("aria-label","العودة للأعلى");b.textContent="↑";
+  document.body.appendChild(b);
+  window.addEventListener("scroll",function(){
+    if(window.scrollY>600)b.classList.add("show");else b.classList.remove("show");
+  },{passive:true});
+  b.addEventListener("click",function(){window.scrollTo({top:0,behavior:"smooth"});});
 })();
 </script>
 </body>

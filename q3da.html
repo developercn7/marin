@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0F1730">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<meta name="description" content="منطقة القعدة: ألعاب وعدادات وتحديات لايف للقعدة.">
+<title>منطقة القعدة 😂</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@500;700&family=IBM+Plex+Sans+Arabic:wght@400;500&display=swap">
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+<style>
+:root{
+  --bg:#EDF1F7; --surface:#FFFFFF; --ink:#12203F; --muted:#51607F; --line:#C9D3E3; --accent:#2D5BFF; --on-accent:#FFFFFF;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#0F1730; --surface:#18233F; --ink:#EAF0FF; --muted:#A3B1D1; --line:#2B3A5E; --accent:#7C9BFF; --on-accent:#0F1730;}
+}
+:root[data-theme="dark"]{--bg:#0F1730; --surface:#18233F; --ink:#EAF0FF; --muted:#A3B1D1; --line:#2B3A5E; --accent:#7C9BFF; --on-accent:#0F1730;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans Arabic",Tahoma,Arial,sans-serif;font-size:1.05rem;line-height:1.9}
+h1,h2,h3{font-family:"Reem Kufi","IBM Plex Sans Arabic",Tahoma,sans-serif;margin:0;line-height:1.25}
+a{color:inherit}
+.wrap{max-width:960px;margin:0 auto;padding:0 1.25rem 3rem}
+nav{display:flex;gap:1.25rem;padding:1.25rem 0;flex-wrap:wrap}
+nav a{text-decoration:none;color:var(--muted)}
+nav a:hover{color:var(--ink)}
+section h2{font-size:clamp(1.8rem,6vw,2.6rem)}
+.btn{display:inline-block;background:var(--accent);color:var(--on-accent);border:none;border-radius:12px;padding:.7rem 1.5rem;font-family:inherit;font-size:1rem;cursor:pointer;text-decoration:none}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem;margin-top:1.5rem}
+.qcard{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:1rem 1.1rem;text-align:center}
+.qcard h3{font-size:1.05rem;margin-bottom:.4rem}
+.qcard p{margin:.3rem 0}
+.qbig{font-size:2rem;font-weight:700;font-family:"Reem Kufi",sans-serif}
+.qmuted{color:var(--muted);font-size:.88rem}
+.pbtn{display:inline-block;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:.35rem .85rem;margin:.2rem;cursor:pointer;font:inherit;font-size:.9rem;transition:.15s}
+.pbtn:hover{border-color:var(--accent)}
+.pbtn:disabled{opacity:.45;cursor:default}
+.pbtn.acc{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.qbar{height:8px;border-radius:99px;background:var(--bg);overflow:hidden;margin:.15rem 0 .45rem}
+.qbar i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .4s}
+.qrow{display:flex;justify-content:space-between;font-size:.92rem}
+.qinp{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;color:var(--ink);padding:.55rem .8rem;font:inherit;font-size:.95rem;margin:.2rem 0}
+.qres{min-height:1.4rem;font-size:.95rem}
+.qmsg{border:1px dashed var(--line);border-radius:10px;padding:.5rem .7rem;margin:.35rem 0;font-size:.92rem}
+.qmsg b{color:var(--accent)}
+.qlock{font-size:1.6rem}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+  <a href="index.html">← الرئيسية</a>
+  <a href="chat.html">شات 💬</a>
+  <a href="games.html">ألعاب 🎮</a>
+  <a href="sticker.html">ستيكرز 😂</a>
+</nav>
+<section id="q3da">
+    <h2>منطقة القعدة 😂</h2>
+    <p style="color:var(--muted)">٢٠ لعبة وخدعة معمولة ليكم انتوا بالذات. كل حاجة لايف ومشتركة بينكم</p>
+    <div class="qgrid">
+
+      <div class="qcard"><h3>🟢 الموجودين دلوقتي</h3><div class="qbig" id="qOnline">...</div><p class="qmuted">واحد على الموقع حاليًا</p></div>
+
+      <div class="qcard"><h3>👀 عداد الزوار</h3><div class="qbig" id="qVisitors">...</div><p class="qmuted">زائر من أول يوم</p></div>
+
+      <div class="qcard"><h3>🗳️ استفتاء القعدة</h3><p>مين أحلى واحد في القعدة؟ 😌</p><div id="qPoll"></div><p class="qmuted" id="qPollNote"></p></div>
+
+      <div class="qcard"><h3>😂 زرار الضحك</h3><div class="qbig" id="qLaugh">0</div><button class="pbtn acc" id="qLaughBtn">اضحك 😂</button><p class="qmuted">عدد ضحكات القعدة كلها</p></div>
+
+      <div class="qcard"><h3>🃏 نكتة عشوائية</h3><p class="qres" id="qJoke">دوس واضحك</p><button class="pbtn" id="qJokeBtn">هات نكتة</button></div>
+
+      <div class="qcard"><h3>📜 حكمة اليوم</h3><p class="qres" id="qWisdom"></p></div>
+
+      <div class="qcard"><h3>🤥 مولد الأعذار</h3><p class="qres" id="qExcuse">محتاج عذر؟</p><button class="pbtn" id="qExcuseBtn">هات عذر</button></div>
+
+      <div class="qcard"><h3>🕌 عداد قعدة الجمعة</h3><div class="qbig" id="qFriday">...</div><p class="qmuted">فاضل على قعدة الجمعة</p></div>
+
+      <div class="qcard"><h3>⏰ مين هيتأخر؟</h3><p class="qmuted">راهن مين آخر واحد هيوصل القعدة الجاية</p><div id="qLate"></div><p class="qmuted" id="qLateNote"></p></div>
+
+      <div class="qcard"><h3>☝️ عداد قولتلك</h3><p class="qmuted">كل واحد قال "أنا قولتلك" كام مرة</p><div id="qTold"></div></div>
+
+      <div class="qcard"><h3>💸 مين دفع الحساب؟</h3><p class="qmuted">سجّل كل مرة حد يدفع حساب القعدة</p><div id="qPaid"></div></div>
+
+      <div class="qcard"><h3>😤 عداد العتاب</h3><p class="qmuted">مين فاته قعدة ولسه معتابينه</p><div id="qGrudge"></div></div>
+
+      <div class="qcard"><h3>🤫 خزنة الأسرار</h3><p class="qmuted">اكتب سر من غير اسمك، وخمنوا صاحبه</p>
+        <form id="qSecretForm"><input class="qinp" id="qSecretText" maxlength="120" placeholder="سرك في أمان..." autocomplete="off"><button class="pbtn acc" type="submit">ارمي السر 🤫</button></form>
+        <div id="qSecrets"></div></div>
+
+      <div class="qcard"><h3>🏆 سجل المواقف</h3><p class="qmuted">قاعة مشاهير المواقف الأسطورية</p>
+        <form id="qMomentForm"><input class="qinp" id="qMomentName" maxlength="20" placeholder="اسمك" autocomplete="off"><input class="qinp" id="qMomentText" maxlength="120" placeholder="الموقف..." autocomplete="off"><button class="pbtn acc" type="submit">سجّله 🏆</button></form>
+        <div id="qMoments"></div></div>
+
+      <div class="qcard"><h3>⏳ رسالة للمستقبل</h3><p class="qmuted">اكتب رسالة تتفتح راس السنة ٢٠٢٧</p>
+        <form id="qFutureForm"><input class="qinp" id="qFutureName" maxlength="20" placeholder="اسمك" autocomplete="off"><input class="qinp" id="qFutureText" maxlength="120" placeholder="رسالتك للمستقبل..." autocomplete="off"><button class="pbtn acc" type="submit">اقفلها ⏳</button></form>
+        <div class="qbig" id="qFutureCount">0</div><p class="qmuted" id="qFutureNote">رسالة مقفولة 🔒</p>
+        <div id="qFutureList"></div></div>
+
+      <div class="qcard"><h3>🎤 مين قالها؟</h3><p class="qres" id="qQuizQ">جاهز؟</p><div id="qQuizOpts"></div><p class="qmuted" id="qQuizScore"></p><button class="pbtn" id="qQuizBtn">ابدأ</button></div>
+
+      <div class="qcard"><h3>🪪 بطاقة العضوية</h3><p class="qmuted">بطاقة رسمية بعضوية القعدة</p>
+        <input class="qinp" id="qCardName" maxlength="20" placeholder="اسمك" autocomplete="off">
+        <button class="pbtn acc" id="qCardBtn">اطلع البطاقة</button>
+        <canvas id="qCardCv" width="800" height="450" style="max-width:100%;border-radius:10px;margin-top:.5rem;display:none"></canvas>
+        <button class="pbtn" id="qCardDl" style="display:none">⬇️ حمّلها</button></div>
+
+      <div class="qcard"><h3>🎭 مولد الألقاب</h3><p class="qres" id="qNick">لقبك الجديد مستنيك</p><button class="pbtn" id="qNickBtn">هات لقب</button></div>
+
+      <div class="qcard"><h3>🎂 مفكرة المواليد</h3><p class="qmuted">سجّل مواليد القعدة (بتتحفظ على جهازك)</p>
+        <form id="qBirthForm"><input class="qinp" id="qBirthName" maxlength="20" placeholder="الاسم" autocomplete="off"><input class="qinp" id="qBirthDate" type="date"><button class="pbtn acc" type="submit">سجّل 🎂</button></form>
+        <div id="qBirths"></div></div>
+
+      <div class="qcard"><h3>⚽ توقعات الأسبوع</h3><p class="qmuted">توقعك لأهم ماتش الأسبوع دا</p><div id="qPred"></div><p class="qmuted" id="qPredNote"></p></div>
+
+    </div>
+  </section>
+</div>
+<script>
+(function(){
+var NAMES=["أبو لحية","مؤمن الديب","الديزل","عطية","فادي","بيجو"];
+var BASE="marinmagdy66/q3da/x7f2k9";
+var CID="q3da-"+Math.random().toString(36).slice(2,10);
+var BAD=["شرموط","متناك","خول","عرص","قحب","نيك","طيز","كسم","بضان","زب","خنزير","لبوة","عاهر"];
+function esc(s){var d=document.createElement("div");d.textContent=s;return d.innerHTML;}
+function badWord(s){for(var i=0;i<BAD.length;i++){if(s.indexOf(BAD[i])!==-1)return true;}return false;}
+function $(id){return document.getElementById(id);}
+
+/* ---------- shared MQTT ---------- */
+var client=null,ready=false,topics={},ci=0;
+var brokers=["wss://broker.emqx.io:8084/mqtt","wss://broker.hivemq.com:8884/mqtt"];
+function sub(topic,cb){
+  if(!topics[topic])topics[topic]=[];
+  topics[topic].push(cb);
+  if(client&&ready)client.subscribe(topic);
+}
+function pub(topic,payload,retain){
+  if(client&&ready)client.publish(topic,payload,{retain:retain!==false});
+}
+function connect(){
+  client=mqtt.connect(brokers[ci%brokers.length],{clientId:CID,reconnectPeriod:4000,connectTimeout:8000});
+  client.on("connect",function(){
+    ready=true;
+    for(var t in topics)client.subscribe(t);
+  });
+  client.on("message",function(t,p){
+    var list=topics[t]||[];
+    // wildcard subs
+    for(var key in topics){
+      if(key.slice(-1)==="#"&&t.indexOf(key.slice(0,-1))===0)list=list.concat(topics[key]);
+    }
+    for(var i=0;i<list.length;i++){try{list[i](t,p.toString());}catch(e){}}
+  });
+  client.on("error",function(){ci++;});
+}
+connect();
+
+/* ---------- 1. online now ---------- */
+var seen={},onlineN=0;
+function renderOnline(){
+  var now=Date.now();onlineN=0;
+  for(var k in seen){if(now-seen[k]<90000)onlineN++;else delete seen[k];}
+  $("qOnline").textContent=onlineN;
+  var p=$("qOnline").nextElementSibling;
+  if(p)p.textContent=onlineN===1?"واحد على الموقع حاليًا":onlineN===2?"اتنين على الموقع حاليًا":onlineN+" على الموقع حاليًا";
+}
+sub(BASE+"/presence/#",function(t){
+  seen[t.slice(t.lastIndexOf("/")+1)]=Date.now();renderOnline();
+});
+setInterval(function(){pub(BASE+"/presence/"+CID,"1",false);renderOnline();},25000);
+setTimeout(function(){pub(BASE+"/presence/"+CID,"1",false);renderOnline();},3000);
+renderOnline();
+
+/* ---------- 2. visitor counter ---------- */
+var visitors=null;
+sub(BASE+"/visitors",function(t,p){
+  visitors=parseInt(p)||0;
+  $("qVisitors").textContent=visitors;
+});
+setTimeout(function(){
+  if(!localStorage.getItem("q3da_visited")){
+    localStorage.setItem("q3da_visited","1");
+    setTimeout(function(){pub(BASE+"/visitors",String((visitors||0)+1));},2500);
+  }
+},1500);
+
+/* ---------- generic per-name counters ---------- */
+function nameCounter(path,elId,btnLabel,oneVote,noteId){
+  var counts={};NAMES.forEach(function(n){counts[n]=0;});
+  function render(){
+    var el=$(elId);el.innerHTML="";
+    var max=1;NAMES.forEach(function(n){if(counts[n]>max)max=counts[n];});
+    NAMES.forEach(function(n){
+      var row=document.createElement("div");
+      row.innerHTML='<div class="qrow"><span>'+esc(n)+'</span><span>'+counts[n]+'</span></div>'+
+        '<div class="qbar"><i style="width:'+Math.round(counts[n]/max*100)+'%"></i></div>';
+      var b=document.createElement("button");b.className="pbtn";b.textContent=btnLabel(n);
+      b.addEventListener("click",function(){
+        if(oneVote&&localStorage.getItem("q3da_"+elId)){
+          if(noteId)$(noteId).textContent="صوتك اتسجل قبل كده 😄";return;
+        }
+        if(oneVote)localStorage.setItem("q3da_"+elId,"1");
+        pub(BASE+"/"+path+"/"+encodeURIComponent(n),String((counts[n]||0)+1));
+        if(noteId)$(noteId).textContent="اتسجلت ✅";
+      });
+      row.appendChild(b);el.appendChild(row);
+    });
+  }
+  sub(BASE+"/"+path+"/#",function(t,p){
+    var n=decodeURIComponent(t.slice(t.lastIndexOf("/")+1));
+    if(counts[n]!==undefined){counts[n]=parseInt(p)||0;render();}
+  });
+  render();
+}
+
+/* 3. poll */ nameCounter("poll","qPoll",function(n){return "صوّت لـ"+n;},true,"qPollNote");
+/* 9. late bet */ nameCounter("late","qLate",function(n){return "راهن على "+n;},true,"qLateNote");
+/* 10. told-you-so */ nameCounter("told","qTold",function(n){return "+1 لـ"+n;},false,null);
+/* 11. paid */ nameCounter("paid","qPaid",function(n){return n+" دفع 💸";},false,null);
+/* 12. grudge */ nameCounter("grudge","qGrudge",function(n){return "عتاب على "+n;},false,null);
+
+/* ---------- 4. laugh counter ---------- */
+sub(BASE+"/laugh",function(t,p){$("qLaugh").textContent=parseInt(p)||0;});
+$("qLaughBtn").addEventListener("click",function(){
+  var c=parseInt($("qLaugh").textContent)||0;
+  pub(BASE+"/laugh",String(c+1));
+  var b=$("qLaughBtn");b.textContent="😂😂😂";
+  setTimeout(function(){b.textContent="اضحك 😂";},400);
+});
+
+/* ---------- 5. jokes ---------- */
+var JOKES=[
+"مرة واحد بخيل راح للدكتور قاله: عندي إمساك. قاله: وانت جاي ليه؟ قاله: عشان مش قادر أدفع",
+"واحد اتأخر على القعدة ساعتين، لما وصل قالهم: أنا كنت جاي من بدري بس التقاطع كان واقف",
+"مرة واحد اشترى موبايل جديد، أول حاجة عملها سأل: فيه شاحن ولا نشتري؟",
+"واحد صاحبه قاله: تعالى القعدة بكرة بدري. قاله: بدري يعني كام؟ قاله: متعملش فيها أجنبي",
+"مرة واحد دكتور قال لمريض: لازم تمشي كل يوم ساعة. قاله: طب ينفع على الكرسي؟",
+"واحد قال لصاحبه: أنا نزلت ١٠ كيلو. قاله: منين؟ قاله: من جيبي",
+"مرة واحد سألوه: ليه دايما آخر واحد يوصل؟ قالهم: عشان أنا اللي بقفل النور",
+"واحد اتصل بصاحبه الساعة ٣ الفجر، قاله: صاحي؟ قاله: لأ، أنا بكلمك من النوم",
+"مرة واحد قال: أنا عمري ما كذبت. صاحبه رد عليه: دي أول كدبة",
+"واحد قال لصاحبه: الموبايل بيفصل. قاله: حطه في الشاحن. قاله: أصل الشاحن بيفصل برضه",
+"مرة واحد راح المطعم قال للجرسون: الفاتورة. قاله: حاضر، هات الفلوس الأول. قاله: خلاص عشان كده طلبت الفاتورة",
+"واحد قال لصاحبه: أنا ذاكرت النهارده ٨ ساعات. قاله: ذكرت إيه؟ قاله: إني فتحت الكتاب",
+"مرة واحد اتسأل: لو ماشي في الشارع ولقيت ١٠٠ جنيه؟ قال: أدور على صاحبها وأسأله فيه تاني؟",
+"واحد قال لصاحبه: عندي خبر حلو وخبر وحش. قاله: قول الحلو. قاله: الحلو إني هقولك الوحش",
+"مرة واحد دخل امتحان، أول سؤال: عرّف الصدق. كتب: هو اللي مكتوب في الكتاب اللي مش فاكر منه حاجة"];
+$("qJokeBtn").addEventListener("click",function(){
+  $("qJoke").textContent=JOKES[Math.floor(Math.random()*JOKES.length)];
+});
+
+/* ---------- 6. daily wisdom ---------- */
+var WISDOM=[
+"اللي يوصل بدري يدفع الحساب، فخد بالك 😌",
+"قعدة من غير ضحك زي شاي من غير سكر",
+"اللي بيقول هاجيلك في السكة، اعتبره لسه نايم",
+"صديق القعدة وقت الامتحانات هو الصديق الحقيقي",
+"مفيش مشكلة في الدنيا ماتتحلش على قعدة",
+"اللي معاه شاحن، معاه القوة",
+"أحسن خطة هي اللي تتعمل في القعدة ومتتنفذش 😂",
+"العتاب على قد المحبة، والهزار على قد القرب",
+"اللي يصوّب توقع الماتش، يفضل فخور بيها أسبوع",
+"القعدة الحلوة عمرها ما تنتهي في معادها"];
+var doy=Math.floor((Date.now()-new Date(new Date().getFullYear(),0,0))/86400000);
+$("qWisdom").textContent=WISDOM[doy%WISDOM.length];
+
+/* ---------- 7. excuse generator ---------- */
+var EX1=["أصل","بصراحة","والله العظيم","تخيل بقى إن","معلش أنا"];
+var EX2=["المواصلات وقفت بي","النت فصل والشاحن ضاع","ماما خلتني أنزل أجيب حاجة","الموبايل فصل شحن وأنا في السكة","عمي جه فجأة من السفر"];
+var EX3=["ومش عارف أشرح أكتر من كده","وأنا زعلان أكتر منكم","بس المرة الجاية أنا أول واحد","والموضوع كان برا إيدي تمامًا","وسيبولي الحساب عليا المرة دي"];
+$("qExcuseBtn").addEventListener("click",function(){
+  function r(a){return a[Math.floor(Math.random()*a.length)];}
+  $("qExcuse").textContent=r(EX1)+" "+r(EX2)+", "+r(EX3);
+});
+
+/* ---------- 8. Friday countdown ---------- */
+function nextFriday(){
+  var d=new Date(),t=new Date(d);
+  t.setDate(d.getDate()+((5-d.getDay()+7)%7));
+  t.setHours(18,0,0,0);
+  if(t<=d)t.setDate(t.getDate()+7);
+  return t;
+}
+function fridayTick(){
+  var diff=nextFriday()-new Date();
+  var dd=Math.floor(diff/86400000),hh=Math.floor(diff/3600000)%24,mm=Math.floor(diff/60000)%60;
+  var out="";
+  if(dd>0)out+=dd+(dd===1?" يوم و":dd===2?" يومين و":" أيام و");
+  out+=hh+(hh===1?" ساعة و":hh===2?" ساعتين و":" ساعات و");
+  out+=mm+(mm===1?" دقيقة":mm===2?" دقيقتين":" دقايق");
+  $("qFriday").textContent=out;
+}
+fridayTick();setInterval(fridayTick,30000);
+
+/* ---------- 13. secrets ---------- */
+var secrets=[];
+function renderSecrets(){
+  var el=$("qSecrets");el.innerHTML="";
+  secrets.slice(-4).reverse().forEach(function(m){
+    var d=document.createElement("div");d.className="qmsg";d.textContent="🤫 "+m.t;el.appendChild(d);
+  });
+}
+sub(BASE+"/secrets/#",function(t,p){
+  try{var m=JSON.parse(p);if(m&&m.t&&!badWord(m.t)){secrets.push(m);renderSecrets();}}catch(e){}
+});
+$("qSecretForm").addEventListener("submit",function(e){
+  e.preventDefault();
+  var t=$("qSecretText").value.trim();if(!t)return;
+  if(badWord(t)){$("qSecretText").value="";$("qSecretText").placeholder="الشتايم مش بتعدي 🙅‍♂️";return;}
+  pub(BASE+"/secrets/"+Math.random().toString(36).slice(2,10),JSON.stringify({t:t.slice(0,120)}));
+  $("qSecretText").value="";
+});
+
+/* ---------- 14. moments ---------- */
+var moments=[];
+function renderMoments(){
+  var el=$("qMoments");el.innerHTML="";
+  moments.slice(-4).reverse().forEach(function(m){
+    var d=document.createElement("div");d.className="qmsg";d.innerHTML="<b>"+esc(m.n)+":</b> "+esc(m.t);el.appendChild(d);
+  });
+}
+sub(BASE+"/moments/#",function(t,p){
+  try{var m=JSON.parse(p);if(m&&m.n&&m.t&&!badWord(m.t)&&!badWord(m.n)){moments.push(m);renderMoments();}}catch(e){}
+});
+$("qMomentForm").addEventListener("submit",function(e){
+  e.preventDefault();
+  var n=$("qMomentName").value.trim(),t=$("qMomentText").value.trim();
+  if(!n||!t)return;
+  if(badWord(n)||badWord(t)){$("qMomentText").placeholder="الشتايم مش بتعدي 🙅‍♂️";$("qMomentText").value="";return;}
+  pub(BASE+"/moments/"+Math.random().toString(36).slice(2,10),JSON.stringify({n:n.slice(0,20),t:t.slice(0,120)}));
+  $("qMomentText").value="";
+});
+
+/* ---------- 15. future messages ---------- */
+var REVEAL=new Date("2027-01-01T00:00:00").getTime();
+var future=[];
+function renderFuture(){
+  var now=Date.now(),locked=0;
+  var el=$("qFutureList");el.innerHTML="";
+  future.forEach(function(m){
+    if(now<m.open){locked++;return;}
+    var d=document.createElement("div");d.className="qmsg";d.innerHTML="<b>"+esc(m.n)+":</b> "+esc(m.t);el.appendChild(d);
+  });
+  $("qFutureCount").textContent=locked;
+  $("qFutureNote").textContent=locked===1?"رسالة مقفولة 🔒":locked===2?"رسالتين مقفولين 🔒":locked+" رسايل مقفولة 🔒";
+}
+sub(BASE+"/future/#",function(t,p){
+  try{var m=JSON.parse(p);if(m&&m.n&&m.t&&!badWord(m.t)&&!badWord(m.n)){future.push(m);renderFuture();}}catch(e){}
+});
+$("qFutureForm").addEventListener("submit",function(e){
+  e.preventDefault();
+  var n=$("qFutureName").value.trim(),t=$("qFutureText").value.trim();
+  if(!n||!t)return;
+  if(badWord(n)||badWord(t)){$("qFutureText").placeholder="الشتايم مش بتعدي 🙅‍♂️";$("qFutureText").value="";return;}
+  pub(BASE+"/future/"+Math.random().toString(36).slice(2,10),JSON.stringify({n:n.slice(0,20),t:t.slice(0,120),open:REVEAL}));
+  $("qFutureText").value="";
+});
+renderFuture();
+
+/* ---------- 16. quiz ---------- */
+var QUOTES=[
+{t:"هاجيلك في السكة",a:0},{t:"أنا وصلت، افتحولي",a:3},{t:"والله كنت جاي من بدري",a:5},
+{t:"مين جاب الشاي؟",a:2},{t:"أنا قولتلك من زمان",a:1},{t:"سيبولي الحساب عليا النهارده",a:4},
+{t:"خمس دقايق وأكون عندكم",a:3},{t:"أنا مش بيتأخر، أنا بوصل على المزاج",a:0}];
+var qRound=0,qScore=0,qCur=null;
+function quizNext(){
+  if(qRound>=5){
+    $("qQuizQ").textContent="خلصت! نتيجتك: "+qScore+" من 5 "+(qScore>=4?"🏆":qScore>=2?"😄":"😂");
+    $("qQuizOpts").innerHTML="";$("qQuizBtn").style.display="";$("qQuizBtn").textContent="العب تاني";
+    return;
+  }
+  qCur=QUOTES[Math.floor(Math.random()*QUOTES.length)];
+  var opts=[qCur.a];
+  while(opts.length<4){
+    var r=Math.floor(Math.random()*NAMES.length);
+    if(opts.indexOf(r)===-1)opts.push(r);
+  }
+  opts.sort(function(){return Math.random()-.5;});
+  $("qQuizQ").textContent='"'+qCur.t+'"';
+  var el=$("qQuizOpts");el.innerHTML="";
+  opts.forEach(function(i){
+    var b=document.createElement("button");b.className="pbtn";b.textContent=NAMES[i];
+    b.addEventListener("click",function(){
+      if(i===qCur.a){qScore++;b.classList.add("acc");}else{b.disabled=true;}
+      qRound++;
+      $("qQuizScore").textContent="النتيجة: "+qScore+" / "+qRound;
+      setTimeout(quizNext,700);
+    });
+    el.appendChild(b);
+  });
+}
+$("qQuizBtn").addEventListener("click",function(){
+  qRound=0;qScore=0;$("qQuizBtn").style.display="none";$("qQuizScore").textContent="";quizNext();
+});
+
+/* ---------- 17. membership card ---------- */
+var TITLES=["الأسطورة","المعلم","الكابتن","باشا القعدة","صاحب الحساب","ملك الهزار","الظابط","الدكتور"];
+$("qCardBtn").addEventListener("click",function(){
+  var n=$("qCardName").value.trim();
+  if(!n)return;
+  var h=0;for(var i=0;i<n.length;i++)h=(h*31+n.charCodeAt(i))%9973;
+  var num=100+(h%900),title=TITLES[h%TITLES.length];
+  var cv=$("qCardCv"),ctx=cv.getContext("2d");
+  var g=ctx.createLinearGradient(0,0,800,450);
+  g.addColorStop(0,"#0F1730");g.addColorStop(1,"#2D5BFF");
+  ctx.fillStyle=g;ctx.fillRect(0,0,800,450);
+  ctx.strokeStyle="#FFD700";ctx.lineWidth=6;ctx.strokeRect(14,14,772,422);
+  ctx.fillStyle="#FFD700";ctx.font="700 34px 'Reem Kufi',sans-serif";ctx.textAlign="center";
+  ctx.fillText("قعدة مارين 😂",400,80);
+  ctx.fillStyle="#FFFFFF";ctx.font="700 58px 'Reem Kufi',sans-serif";
+  ctx.fillText(title+" "+n,400,220);
+  ctx.font="500 30px 'IBM Plex Sans Arabic',sans-serif";ctx.fillStyle="#C9D3E3";
+  ctx.fillText("عضوية رسمية مدى الحياة",400,300);
+  ctx.fillStyle="#FFD700";ctx.font="700 30px monospace";
+  ctx.fillText("NO. "+num,400,380);
+  cv.style.display="block";$("qCardDl").style.display="";
+});
+$("qCardDl").addEventListener("click",function(){
+  var a=document.createElement("a");a.download="membership.png";
+  a.href=$("qCardCv").toDataURL("image/png");a.click();
+});
+
+/* ---------- 18. nickname generator ---------- */
+var NK1=["الأسطورة","المعلم","الكابتن","الباشا","الدكتور","الظابط","الفنان","البروف"];
+var NK2=["الهزار","القعدة","الضحك","السهرة","الشاي","التأخير","التوقعات","الحساب"];
+$("qNickBtn").addEventListener("click",function(){
+  $("qNick").textContent=NK1[Math.floor(Math.random()*NK1.length)]+" "+NK2[Math.floor(Math.random()*NK2.length)];
+});
+
+/* ---------- 19. birthdays ---------- */
+function getBirths(){try{return JSON.parse(localStorage.getItem("q3da_births")||"[]");}catch(e){return[];}}
+function renderBirths(){
+  var list=getBirths(),el=$("qBirths");el.innerHTML="";
+  var now=new Date();
+  list.sort(function(a,b){return daysTo(a)-daysTo(b);});
+  list.forEach(function(b){
+    var d=document.createElement("div");d.className="qmsg";
+    var days=daysTo(b);
+    d.textContent="🎂 "+b.n+" — "+(days===0?"النهارده!! 🎉":days===1?"بكرة!":"فاضل "+days+" يوم");
+    el.appendChild(d);
+  });
+  function daysTo(b){
+    var t=new Date(now.getFullYear(),b.m-1,b.d);
+    if(t<new Date(now.getFullYear(),now.getMonth(),now.getDate()))t.setFullYear(now.getFullYear()+1);
+    return Math.round((t-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/86400000);
+  }
+}
+$("qBirthForm").addEventListener("submit",function(e){
+  e.preventDefault();
+  var n=$("qBirthName").value.trim(),v=$("qBirthDate").value;
+  if(!n||!v)return;
+  var parts=v.split("-");
+  var list=getBirths();
+  list.push({n:n.slice(0,20),m:parseInt(parts[1]),d:parseInt(parts[2])});
+  localStorage.setItem("q3da_births",JSON.stringify(list));
+  $("qBirthName").value="";$("qBirthDate").value="";
+  renderBirths();
+});
+renderBirths();
+
+/* ---------- 20. match predictions ---------- */
+var PRED=["فوز 💪","تعادل 🤝","خسارة 😅"],predCounts={};
+PRED.forEach(function(p){predCounts[p]=0;});
+function renderPred(){
+  var el=$("qPred");el.innerHTML="";
+  PRED.forEach(function(p){
+    var b=document.createElement("button");b.className="pbtn";
+    b.textContent=p+" ("+predCounts[p]+")";
+    b.addEventListener("click",function(){
+      if(localStorage.getItem("q3da_pred")){$("qPredNote").textContent="توقعك اتسجل قبل كده 😄";return;}
+      localStorage.setItem("q3da_pred","1");
+      pub(BASE+"/pred/"+encodeURIComponent(p),String((predCounts[p]||0)+1));
+      $("qPredNote").textContent="اتسجل ✅";
+    });
+    el.appendChild(b);
+  });
+}
+sub(BASE+"/pred/#",function(t,p){
+  var k=decodeURIComponent(t.slice(t.lastIndexOf("/")+1));
+  if(predCounts[k]!==undefined){predCounts[k]=parseInt(p)||0;renderPred();}
+});
+renderPred();
+
+})();
+</script>
+</body>
+</html>
