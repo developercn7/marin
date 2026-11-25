@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ريلز 🎬 | مارين</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0b0b0f;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;overflow:hidden}
+header{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:linear-gradient(rgba(0,0,0,.55),transparent)}
+header h1{font-size:20px}
+header a{color:#fff;text-decoration:none;background:rgba(255,255,255,.15);padding:6px 14px;border-radius:999px;font-size:14px}
+#feed{height:100dvh;overflow-y:scroll;scroll-snap-type:y mandatory}
+.reel{height:100dvh;scroll-snap-align:start;display:flex;align-items:center;justify-content:center;position:relative;background:#000}
+.reel video{max-width:100%;max-height:100%;object-fit:contain}
+.mute-btn{position:absolute;bottom:24px;left:24px;background:rgba(255,255,255,.2);border:none;color:#fff;font-size:18px;padding:10px 14px;border-radius:999px;cursor:pointer}
+.counter{position:fixed;bottom:14px;right:18px;z-index:10;background:rgba(255,255,255,.15);padding:6px 12px;border-radius:999px;font-size:13px;display:none}
+#empty{position:fixed;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;text-align:center;padding:30px;color:#bbb}
+#empty .big{font-size:40px}
+</style>
+</head>
+<body>
+<header>
+<h1>ريلز 🎬</h1>
+<a href="index.html">الرئيسية</a>
+</header>
+<div id="feed"></div>
+<div class="counter" id="counter">1 / 1</div>
+<div id="empty">
+<div class="big">🎬</div>
+<p>لسه مفيش ريلز هنا.<br>ارفع الفيديوهات على الموقع بأسماء<br>reel1.mp4 و reel2.mp4 وهكذا</p>
+</div>
+<script>
+const MAX=10,feed=document.getElementById('feed'),counter=document.getElementById('counter');
+async function head(u){try{const r=await fetch(u,{method:'HEAD'});return r.ok}catch(e){return false}}
+(async()=>{
+const vids=[];
+for(let i=1;i<=MAX;i++){const src='reel'+i+'.mp4';if(await head(src))vids.push(src)}
+if(!vids.length){document.getElementById('empty').style.display='flex';return}
+const reels=[];
+vids.forEach((src)=>{
+const d=document.createElement('div');d.className='reel';
+const v=document.createElement('video');v.src=src;v.loop=true;v.muted=true;v.autoplay=true;v.setAttribute('playsinline','');
+const b=document.createElement('button');b.className='mute-btn';b.textContent='🔇';
+b.onclick=e=>{e.stopPropagation();v.muted=!v.muted;b.textContent=v.muted?'🔇':'🔊'};
+v.onclick=()=>{if(v.paused)v.play();else v.pause()};
+d.appendChild(v);d.appendChild(b);feed.appendChild(d);reels.push(d);
+});
+const obs=new IntersectionObserver(es=>{
+es.forEach(e=>{
+const v=e.target.querySelector('video');
+if(e.isIntersecting){v.play().catch(()=>{});counter.textContent=(reels.indexOf(e.target)+1)+' / '+reels.length}
+else v.pause();
+});
+},{threshold:.6});
+reels.forEach(r=>obs.observe(r));
+counter.style.display='block';
+})();
+</script>
+</body>
+</html>
