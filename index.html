@@ -562,7 +562,7 @@ if(cdD){
  });
 })();
 
-var WS_IMGS=["client1.jpg","client2.jpg","client3.jpg","client4.jpg","client5.jpg","client6.jpg","client7.jpg","client8.jpg","client9.jpg","client10.jpg"];
+var WS_IMGS=[];for(var wsi=1;wsi<=40;wsi++)WS_IMGS.push("client"+wsi+".jpg");
 (function(){
 var wrap=document.getElementById("workSlides");if(!wrap)return;
 var done=0;

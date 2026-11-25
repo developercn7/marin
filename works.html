@@ -32,18 +32,12 @@ header a{color:#EAF0FF;text-decoration:none;background:rgba(255,255,255,.12);pad
 </header>
 <div class="chips" id="chips"></div>
 <div class="grid" id="grid"></div>
-<div id="empty">لسه مفيش صور أعمال هنا.<br>ارفع الصور بأسماء work1.jpg و work2.jpg وهكذا<br>وعدّل تصنيف كل صورة من أول ملف works.html</div>
+<div id="empty">لسه مفيش صور أعمال هنا.<br>ارفع أي صورة باسم work و رقمها، زي work1.jpg و work2.jpg<br>وهتظهر هنا لوحدها من غير أي تعديل 📸</div>
 <div id="overlay"><img id="ovImg" alt=""></div>
 <script>
 // عدّل تصنيف كل صورة من هنا (مواقع / متاجر / تصميم)
-var WORKS=[
-{src:"work1.jpg",cat:"مواقع"},{src:"work2.jpg",cat:"مواقع"},
-{src:"work3.jpg",cat:"متاجر"},{src:"work4.jpg",cat:"متاجر"},
-{src:"work5.jpg",cat:"تصميم"},{src:"work6.jpg",cat:"تصميم"},
-{src:"work7.jpg",cat:"مواقع"},{src:"work8.jpg",cat:"متاجر"},
-{src:"work9.jpg",cat:"تصميم"},{src:"work10.jpg",cat:"مواقع"},
-{src:"work11.jpg",cat:"متاجر"},{src:"work12.jpg",cat:"تصميم"}
-];
+var WORKS=[];
+for(var wi=1;wi<=40;wi++)WORKS.push({src:"work"+wi+".jpg",cat:"أعمال"});
 var grid=document.getElementById("grid"),chips=document.getElementById("chips");
 var ov=document.getElementById("overlay"),ovImg=document.getElementById("ovImg");
 ov.onclick=function(){ov.style.display="none"};
