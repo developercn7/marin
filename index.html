@@ -158,10 +158,32 @@ details p{color:var(--muted);margin:.6rem 0 0}
 #wallMsg{color:var(--muted);font-size:.85rem;margin-top:.5rem;min-height:1.2rem}
 </style>
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+<style>
+#invite{position:fixed;inset:0;background:rgba(10,15,30,.88);display:flex;align-items:center;justify-content:center;z-index:99998;opacity:0;pointer-events:none;transition:opacity .4s}
+#invite.show{opacity:1;pointer-events:auto}
+#invite .card{background:linear-gradient(145deg,#182446,#0F1730);border:2px solid var(--accent);border-radius:20px;padding:2.2rem 1.8rem;max-width:340px;width:88%;text-align:center;transform:translateY(-120vh);box-shadow:0 0 40px rgba(232,163,61,.35)}
+#invite.show .card{animation:slideIn .8s cubic-bezier(.34,1.56,.64,1) forwards}
+@keyframes slideIn{to{transform:translateY(0)}}
+#invite h2{font-family:"Reem Kufi";color:var(--accent);margin-bottom:.8rem}
+#invite p{color:var(--ink);line-height:1.9;margin:.4rem 0}
+#invite .name{color:var(--accent);font-weight:700;font-size:1.3rem}
+#invite button{margin-top:1.2rem;background:var(--accent);color:#0F1730;border:none;border-radius:999px;padding:.65rem 1.8rem;font:inherit;font-weight:700;cursor:pointer}
+#invite .seal{font-size:2.4rem;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+</style>
 </head>
 <body>
 <div id="progressBar"></div>
 <div id="egg"><div class="box"><h3>🤫 لقيت السر!</h3><p>دي لعبة سرية للي بيعرفوا الكود القديم</p><a href="games.html">العب دلوقتي 🎮</a></div></div>
+<div id="invite"><div class="card">
+  <div class="seal">💌</div>
+  <h2>دعوة حلوة</h2>
+  <p>إلى الغالي</p>
+  <p class="name">شنوده عطيه</p>
+  <p>اتفضل يا عطية، يلا نلّم المتراكم مع بعض ❤️</p>
+  <p style="color:var(--muted);font-size:.85rem">مستنيينك 😄</p>
+  <button id="inviteBtn" type="button">حاضر ❤️</button>
+</div></div>
 <div id="preloader"><span>M</span></div>
 <div class="wrap">
   <nav aria-label="التنقل">
@@ -649,6 +671,16 @@ document.getElementById("wallForm").addEventListener("submit",function(e){
   msg.textContent="لسه بتوصل بالنت، جرب تاني ثواني";
  }
 });
+})();
+</script>
+<script>
+(function(){
+ var iv=document.getElementById("invite");
+ setTimeout(function(){iv.classList.add("show");},900);
+ document.getElementById("inviteBtn").addEventListener("click",function(){
+  iv.classList.remove("show");
+  setTimeout(function(){iv.style.display="none";},450);
+ });
 })();
 </script>
 </body>
