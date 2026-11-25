@@ -95,6 +95,16 @@ nav,header,section,footer{position:relative;z-index:1}
 .sl-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.45);color:#fff;border:0;width:38px;height:38px;border-radius:50%;font-size:20px;cursor:pointer;z-index:2}
 .sl-btn.prev{right:10px}
 .sl-btn.next{left:10px}
+
+.slides img{cursor:zoom-in}
+#lightbox{position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;z-index:9999;cursor:zoom-out}
+#lightbox.open{display:flex}
+#lightbox img{max-width:94%;max-height:94%;border-radius:12px}
+
+.marquee{overflow:hidden;white-space:nowrap;padding:14px 0;border-top:1px solid rgba(128,128,128,.2);border-bottom:1px solid rgba(128,128,128,.2)}
+.marquee-track{display:inline-block;animation:mq 18s linear infinite}
+.marquee-track span{margin:0 22px;font-weight:700;opacity:.85}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(50%)}}
 </style>
 </head>
 <body>
@@ -202,6 +212,9 @@ nav,header,section,footer{position:relative;z-index:1}
     });
     </script>
   </section>
+
+
+  <div class="marquee" dir="ltr"><div class="marquee-track"><span>محمود أبو لحية ✦</span><span>مؤمن الديب ✦</span><span>الديزل ✦</span><span>عطية ✦</span><span>فادي ✦</span><span>بيجو ✦</span><span>محمود أبو لحية ✦</span><span>مؤمن الديب ✦</span><span>الديزل ✦</span><span>عطية ✦</span><span>فادي ✦</span><span>بيجو ✦</span></div></div>
 
   <section id="skills">
     <h2>مهاراتي</h2>
@@ -394,9 +407,13 @@ function init(){var i=0,n=wrap.children.length;
  function go(d){i=(i+d+n)%n;wrap.style.transform="translateX("+(i*100)+"%)";}
  var pv=document.querySelector(".sl-btn.prev"),nx=document.querySelector(".sl-btn.next");
  if(pv)pv.onclick=function(){go(-1);};if(nx)nx.onclick=function(){go(1);};
- setInterval(function(){go(1);},4000);}
+ setInterval(function(){go(1);},4000);
+ var lb=document.getElementById("lightbox"),lbi=document.getElementById("lightboxImg");
+ for(var k=0;k<wrap.children.length;k++){wrap.children[k].onclick=function(){lbi.src=this.src;lb.classList.add("open");};}
+ if(lb)lb.onclick=function(){lb.classList.remove("open");};}
 })();
 
 </script>
+<div id="lightbox"><img id="lightboxImg" alt=""></div>
 </body>
 </html>
