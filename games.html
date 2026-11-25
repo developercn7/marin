@@ -9,25 +9,33 @@
 body{background:#0a0c1e;color:#fff;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px}
 a.home{color:#9d8cff;text-decoration:none;margin-bottom:16px}
 h1{margin-bottom:8px}
-.tabs{display:flex;gap:10px;margin:16px 0}
-.tabs button{background:#1b1e3a;color:#fff;border:1px solid #444;padding:10px 22px;border-radius:24px;font-size:16px;cursor:pointer}
+.tabs{display:flex;gap:8px;margin:16px 0;flex-wrap:wrap;justify-content:center}
+.tabs button{background:#1b1e3a;color:#fff;border:1px solid #444;padding:9px 16px;border-radius:24px;font-size:15px;cursor:pointer}
 .tabs button.active{background:#6c4df6;border-color:#6c4df6}
-.game{display:none;width:100%;max-width:420px;text-align:center}
+.game{display:none;width:100%;max-width:430px;text-align:center}
 .game.active{display:block}
 canvas{background:#11142e;border-radius:12px;max-width:100%;touch-action:none}
 #board{display:grid;grid-template-columns:repeat(3,110px);gap:8px;justify-content:center;margin:16px auto}
 .cell{width:110px;height:110px;background:#1b1e3a;border-radius:12px;font-size:52px;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none}
 .cell.win{background:#2e7d32}
-#status,#snakeScore{margin:12px;font-size:18px;min-height:24px}
+#status,#snakeScore,#pongScore,#moves{margin:12px;font-size:18px;min-height:24px}
 .again{background:#6c4df6;color:#fff;border:0;padding:10px 26px;border-radius:24px;font-size:16px;cursor:pointer}
+#memGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:380px;margin:16px auto}
+.mcard{aspect-ratio:1;background:#1b1e3a;border-radius:12px;font-size:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none}
+.mcard.open{background:#2c2f5c}
+#g2048{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:360px;margin:16px auto;background:#11142e;padding:10px;border-radius:12px;touch-action:none}
+.t{aspect-ratio:1;background:#1b1e3a;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;user-select:none}
 </style>
 </head>
 <body>
 <a class="home" href="index.html">← رجوع للموقع</a>
 <h1>الألعاب 🎮</h1>
 <div class="tabs">
-<button id="tabXo" class="active" type="button">إكس أو</button>
-<button id="tabSnake" type="button">التعبان</button>
+<button class="tab active" data-g="gameXo" type="button">إكس أو</button>
+<button class="tab" data-g="gameSnake" type="button">التعبان</button>
+<button class="tab" data-g="gameMem" type="button">الذاكرة</button>
+<button class="tab" data-g="game2048" type="button">2048</button>
+<button class="tab" data-g="gamePong" type="button">بونج</button>
 </div>
 
 <div class="game active" id="gameXo">
@@ -40,14 +48,34 @@ canvas{background:#11142e;border-radius:12px;max-width:100%;touch-action:none}
 <canvas id="snake" width="360" height="360"></canvas>
 <div id="snakeScore">النقاط: 0</div>
 <button class="again" id="snakeAgain" type="button">من الأول</button>
-<p style="opacity:.7;font-size:14px">على الموبايل: اسحب بصباعك على اللعبة. على الكمبيوتر: الأسهم</p>
+<p style="opacity:.7;font-size:14px">اسحب بصباعك أو استخدم الأسهم</p>
+</div>
+
+<div class="game" id="gameMem">
+<div id="moves">المحاولات: 0</div>
+<div id="memGrid"></div>
+<button class="again" id="memAgain" type="button">من الأول</button>
+</div>
+
+<div class="game" id="game2048">
+<div id="score2048">النقاط: 0</div>
+<div id="g2048"></div>
+<button class="again" id="g2048Again" type="button">من الأول</button>
+<p style="opacity:.7;font-size:14px">اسحب بصباعك أو استخدم الأسهم</p>
+</div>
+
+<div class="game" id="gamePong">
+<canvas id="pong" width="360" height="420"></canvas>
+<div id="pongScore">إنت 0 - الكمبيوتر 0</div>
+<p style="opacity:.7;font-size:14px">حرك المضرب بصباعك أو بالماوس. اللي يوصل ٥ يكسب</p>
 </div>
 
 <script>
-var tabXo=document.getElementById('tabXo'),tabSnake=document.getElementById('tabSnake');
-var gameXo=document.getElementById('gameXo'),gameSnake=document.getElementById('gameSnake');
-tabXo.onclick=function(){tabXo.classList.add('active');tabSnake.classList.remove('active');gameXo.classList.add('active');gameSnake.classList.remove('active');};
-tabSnake.onclick=function(){tabSnake.classList.add('active');tabXo.classList.remove('active');gameSnake.classList.add('active');gameXo.classList.remove('active');};
+var tabs=document.querySelectorAll('.tab');
+tabs.forEach(function(b){b.onclick=function(){
+tabs.forEach(function(x){x.classList.remove('active');});
+document.querySelectorAll('.game').forEach(function(x){x.classList.remove('active');});
+b.classList.add('active');document.getElementById(b.dataset.g).classList.add('active');};});
 
 /* XO */
 var board=document.getElementById('board'),statusEl=document.getElementById('status');
@@ -89,11 +117,13 @@ snake.unshift(h);
 if(h.x===food.x&&h.y===food.y){score++;document.getElementById('snakeScore').textContent='النقاط: '+score;placeFood();}else snake.pop();
 ctx.fillStyle='#11142e';ctx.fillRect(0,0,cv.width,cv.height);
 ctx.fillStyle='#e74c3c';ctx.fillRect(food.x*S+2,food.y*S+2,S-4,S-4);
-ctx.fillStyle='#6c4df6';snake.forEach(function(p,i){ctx.fillStyle=i===0?'#9d8cff':'#6c4df6';ctx.fillRect(p.x*S+1,p.y*S+1,S-2,S-2);});}
+snake.forEach(function(p,i){ctx.fillStyle=i===0?'#9d8cff':'#6c4df6';ctx.fillRect(p.x*S+1,p.y*S+1,S-2,S-2);});}
 function setDir(x,y){if(snake.length>1&&snake[0].x+x===snake[1].x&&snake[0].y+y===snake[1].y)return;dir={x:x,y:y};}
 document.addEventListener('keydown',function(e){
-if(e.key==='ArrowUp')setDir(0,-1);else if(e.key==='ArrowDown')setDir(0,1);
-else if(e.key==='ArrowLeft')setDir(-1,0);else if(e.key==='ArrowRight')setDir(1,0);});
+if(e.key==='ArrowUp'){setDir(0,-1);g2048Move('up');}
+else if(e.key==='ArrowDown'){setDir(0,1);g2048Move('down');}
+else if(e.key==='ArrowLeft'){setDir(-1,0);g2048Move('left');}
+else if(e.key==='ArrowRight'){setDir(1,0);g2048Move('right');}});
 var tx=0,ty=0;
 cv.addEventListener('touchstart',function(e){tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
 cv.addEventListener('touchmove',function(e){e.preventDefault();var dx=e.touches[0].clientX-tx,dy=e.touches[0].clientY-ty;
@@ -102,6 +132,85 @@ if(Math.abs(dx)>Math.abs(dy))setDir(dx>0?1:-1,0);else setDir(0,dy>0?1:-1);
 tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:false});
 document.getElementById('snakeAgain').onclick=snakeInit;
 snakeInit();
+
+/* Memory */
+var EMO=['🍕','🚗','🎸','⚽','🐱','🌙','🔥','🍉'];
+var memGrid=document.getElementById('memGrid'),movesEl=document.getElementById('moves');
+var deck=[],first=null,lock=false,moves=0,found=0;
+function memInit(){deck=EMO.concat(EMO).sort(function(){return Math.random()-.5;});
+memGrid.innerHTML='';first=null;lock=false;moves=0;found=0;movesEl.textContent='المحاولات: 0';
+deck.forEach(function(e){var c=document.createElement('div');c.className='mcard';c.textContent='؟';c.dataset.e=e;
+c.onclick=function(){if(lock||this.classList.contains('open'))return;
+this.textContent=this.dataset.e;this.classList.add('open');
+if(!first){first=this;return;}
+moves++;movesEl.textContent='المحاولات: '+moves;
+if(first.dataset.e===this.dataset.e){first=null;found++;
+if(found===EMO.length)movesEl.textContent='خلصتها في '+moves+' محاولة 🎉';}
+else{var a=first,b=this;lock=true;setTimeout(function(){a.textContent='؟';b.textContent='؟';a.classList.remove('open');b.classList.remove('open');first=null;lock=false;},700);}};
+memGrid.appendChild(c);});}
+document.getElementById('memAgain').onclick=memInit;
+memInit();
+
+/* 2048 */
+var gEl=document.getElementById('g2048'),sc2048El=document.getElementById('score2048');
+var grid=[],sc2048=0;
+function g2048Init(){grid=[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];sc2048=0;addTile();addTile();draw2048();}
+function addTile(){var free=[];for(var r=0;r<4;r++)for(var c=0;c<4;c++)if(!grid[r][c])free.push([r,c]);
+if(!free.length)return;var p=free[Math.floor(Math.random()*free.length)];grid[p[0]][p[1]]=Math.random()<.9?2:4;}
+function draw2048(){gEl.innerHTML='';sc2048El.textContent='النقاط: '+sc2048;
+for(var r=0;r<4;r++)for(var c=0;c<4;c++){var v=grid[r][c];var t=document.createElement('div');t.className='t';
+t.textContent=v||'';if(v){var hues={2:'#3c3f6b',4:'#4a4e8a',8:'#6c4df6',16:'#8a5cf6',32:'#a855f7',64:'#c026d3',128:'#db2777',256:'#e11d48',512:'#f59e0b',1024:'#22c55e',2048:'#16a34a'};
+t.style.background=hues[v]||'#fbbf24';}gEl.appendChild(t);}}
+function slide(row){var a=row.filter(function(v){return v;});
+for(var i=0;i<a.length-1;i++)if(a[i]===a[i+1]){a[i]*=2;sc2048+=a[i];a.splice(i+1,1);}
+while(a.length<4)a.push(0);return a;}
+function g2048Move(d){if(!document.getElementById('game2048').classList.contains('active'))return;
+var old=JSON.stringify(grid);
+if(d==='left'||d==='right'){for(var r=0;r<4;r++){var row=grid[r].slice();if(d==='right')row.reverse();row=slide(row);if(d==='right')row.reverse();grid[r]=row;}}
+else{for(var c=0;c<4;c++){var col=[grid[0][c],grid[1][c],grid[2][c],grid[3][c]];if(d==='down')col.reverse();col=slide(col);if(d==='down')col.reverse();
+for(var r2=0;r2<4;r2++)grid[r2][c]=col[r2];}}
+if(JSON.stringify(grid)!==old){addTile();draw2048();
+var canMove=false;for(var r3=0;r3<4;r3++)for(var c3=0;c3<4;c3++){
+if(!grid[r3][c3])canMove=true;
+if(c3<3&&grid[r3][c3]===grid[r3][c3+1])canMove=true;
+if(r3<3&&grid[r3][c3]===grid[r3+1][c3])canMove=true;}
+if(!canMove)sc2048El.textContent='خلصت! النقاط: '+sc2048;}}
+document.getElementById('g2048Again').onclick=g2048Init;
+var gx=0,gy=0;
+gEl.addEventListener('touchstart',function(e){gx=e.touches[0].clientX;gy=e.touches[0].clientY;},{passive:true});
+gEl.addEventListener('touchmove',function(e){e.preventDefault();var dx=e.touches[0].clientX-gx,dy=e.touches[0].clientY-gy;
+if(Math.abs(dx)<24&&Math.abs(dy)<24)return;
+if(Math.abs(dx)>Math.abs(dy))g2048Move(dx>0?'right':'left');else g2048Move(dy>0?'down':'up');
+gx=e.touches[0].clientX;gy=e.touches[0].clientY;},{passive:false});
+g2048Init();
+
+/* Pong */
+var pc=document.getElementById('pong'),pctx=pc.getContext('2d');
+var PW=70,PH=10,py=pc.height-30,cpuY=20,px=pc.width/2-PW/2,cx=pc.width/2-PW/2;
+var ball={x:pc.width/2,y:pc.height/2,vx:3.4,vy:3.4},me=0,him=0,pongOver=false;
+function pongMove(clientX){var r=pc.getBoundingClientRect();var x=(clientX-r.left)*(pc.width/r.width);px=Math.max(0,Math.min(pc.width-PW,x-PW/2));}
+pc.addEventListener('mousemove',function(e){pongMove(e.clientX);});
+pc.addEventListener('touchmove',function(e){e.preventDefault();pongMove(e.touches[0].clientX);},{passive:false});
+function resetBall(dir){ball.x=pc.width/2;ball.y=pc.height/2;ball.vx=(Math.random()>.5?1:-1)*3.4;ball.vy=3.4*dir;}
+function pongTick(){if(!document.getElementById('gamePong').classList.contains('active')||pongOver){requestAnimationFrame(pongFrame);return;}
+ball.x+=ball.vx;ball.y+=ball.vy;
+if(ball.x<6||ball.x>pc.width-6)ball.vx*=-1;
+var target=ball.x-PW/2;cx+=Math.max(-4,Math.min(4,target-cx));
+cx=Math.max(0,Math.min(pc.width-PW,cx));
+if(ball.y<0){me++;document.getElementById('pongScore').textContent='إنت '+me+' - الكمبيوتر '+him;resetBall(1);}
+if(ball.y>pc.height){him++;document.getElementById('pongScore').textContent='إنت '+me+' - الكمبيوتر '+him;resetBall(-1);}
+if(me>=5||him>=5){pongOver=true;
+document.getElementById('pongScore').textContent=(me>=5?'كسبت الماتش! 🎉':'الكمبيوتر كسب الماتش 😅')+' - دوس من الأول';
+me=0;him=0;setTimeout(function(){pongOver=false;document.getElementById('pongScore').textContent='إنت 0 - الكمبيوتر 0';},2000);}
+if(ball.vy>0&&ball.y>=py-8&&ball.y<=py+PH&&ball.x>px&&ball.x<px+PW){ball.vy=-Math.abs(ball.vy)*1.03;ball.vx+=(ball.x-(px+PW/2))*.08;}
+if(ball.vy<0&&ball.y<=cpuY+PH+8&&ball.y>=cpuY&&ball.x>cx&&ball.x<cx+PW){ball.vy=Math.abs(ball.vy)*1.03;ball.vx+=(ball.x-(cx+PW/2))*.08;}
+pongFrame();}
+function pongFrame(){pctx.fillStyle='#11142e';pctx.fillRect(0,0,pc.width,pc.height);
+pctx.fillStyle='#9d8cff';pctx.fillRect(px,py,PW,PH);
+pctx.fillStyle='#e74c3c';pctx.fillRect(cx,cpuY,PW,PH);
+pctx.fillStyle='#fff';pctx.beginPath();pctx.arc(ball.x,ball.y,7,0,7);pctx.fill();
+requestAnimationFrame(pongTick);}
+pongTick();
 </script>
 </body>
 </html>
