@@ -145,6 +145,19 @@ details p{color:var(--muted);margin:.6rem 0 0}
 #egg .box{background:var(--surface);border:1px solid var(--accent);border-radius:18px;padding:2rem;max-width:320px}
 #egg a{display:inline-block;margin-top:1rem;background:var(--accent);color:#fff;padding:.6rem 1.4rem;border-radius:999px;text-decoration:none}
 </style>
+<style>
+.wall-board{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;margin-top:1.2rem;min-height:2rem}
+.chip{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:.5rem 1rem;font-weight:700;font-size:.95rem;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.chip:nth-child(4n+1){transform:rotate(-2deg);border-color:var(--accent)}
+.chip:nth-child(4n+2){transform:rotate(1.5deg)}
+.chip:nth-child(4n+3){transform:rotate(-1deg)}
+.chip:nth-child(4n){transform:rotate(2.5deg);border-color:var(--accent)}
+#wallForm{display:flex;gap:.5rem;margin-top:1rem;justify-content:center;flex-wrap:wrap}
+#wallName{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:.6rem 1rem;color:var(--ink);outline:none;font:inherit;text-align:center}
+#wallName:focus{border-color:var(--accent)}
+#wallMsg{color:var(--muted);font-size:.85rem;margin-top:.5rem;min-height:1.2rem}
+</style>
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 </head>
 <body>
 <div id="progressBar"></div>
@@ -257,9 +270,8 @@ details p{color:var(--muted);margin:.6rem 0 0}
       <label>اسمك<input id="rvName" type="text" required maxlength="60"></label>
       <label>رأيك<textarea id="rvText" rows="3" required maxlength="400"></textarea></label>
       <button class="btn" type="submit">ابعت رأيك</button>
-      <small>هيتفتح واتساب برسالة جاهزة. ابعت رأيك، وبعدها ابعت صورتك في نفس الشات وهنضيفها مع رأيك بعد المراجعة 📸</small><div id="rvDone" style="display:none;color:var(--accent);font-weight:700;margin-top:.5rem">تمام! متنساش تبعت صورتك في الشات 📸</div>
+      <small>هيتفتح واتساب برسالة جاهزة، وهنشر رأيك بعد المراجعة.</small>
     </form>
-    <div style="text-align:center;margin-top:2rem"><button class="btn" id="confettiBtn" type="button">عجبك الموقع؟ دوس هنا 🎉</button></div>
     <script>
     document.getElementById("reviewForm").addEventListener("submit",function(e){
       e.preventDefault();
@@ -267,13 +279,26 @@ details p{color:var(--muted);margin:.6rem 0 0}
       var t=document.getElementById("rvText").value.trim();
       if(!n||!t)return;
       var msg="رأي جديد على الموقع\nالاسم: "+n+"\nالرأي: "+t;
-      window.open("https://wa.me/201276239331?text="+encodeURIComponent(msg),"_blank");document.getElementById("rvDone").style.display="block";
+      window.open("https://wa.me/201276239331?text="+encodeURIComponent(msg),"_blank");
     });
     </script>
+    <div style="text-align:center;margin-top:2rem"><button class="btn" id="confettiBtn" type="button">عجبك الموقع؟ دوس هنا 🎉</button></div>
+
   </section>
 
 
   <div class="marquee" dir="ltr"><div class="marquee-track"><span>محمود أبو لحية ✦</span><span>مؤمن الديب ✦</span><span>الديزل ✦</span><span>عطية ✦</span><span>فادي ✦</span><span>بيجو ✦</span><span>محمود أبو لحية ✦</span><span>مؤمن الديب ✦</span><span>الديزل ✦</span><span>عطية ✦</span><span>فادي ✦</span><span>بيجو ✦</span></div></div>
+
+    <section id="wall" style="text-align:center">
+    <h2>سيب بصمتك ✋</h2>
+    <p style="color:var(--muted)">اكتب اسمك وخليه محفور في الحيطة مع باقي الزوار</p>
+    <form id="wallForm">
+      <input id="wallName" maxlength="20" placeholder="اسمك" autocomplete="off">
+      <button class="btn" type="submit">اضرب ✋</button>
+    </form>
+    <div id="wallMsg"></div>
+    <div class="wall-board" id="wallBoard"></div>
+  </section>
 
   <section id="skills">
     <h2>مهاراتي</h2>
@@ -576,6 +601,53 @@ this.textContent=en?"عربي":"EN";
 TR.forEach(function(t){var el=document.querySelector(t[0]);if(el)el.innerHTML=en?t[1]:el.dataset.ar;});
 document.querySelectorAll("[data-en]").forEach(function(el){el.innerHTML=en?el.dataset.en:el.dataset.ar;});
 if(heroP)heroP.innerHTML=en?"Web designer &amp; developer. I build simple, fast, easy-to-use websites.":heroP.dataset.ar;
+});
+})();
+</script>
+<script>
+(function(){
+var TOPIC="marinmagdy66/wall/x7f2k9";
+var board=document.getElementById("wallBoard"),inp=document.getElementById("wallName"),msg=document.getElementById("wallMsg");
+var BAD=["شرموط","متناك","خول","عرص","قحب","نيك","طيز","كسم","بضان","زب","خنزير"];
+function esc(s){var d=document.createElement("div");d.textContent=s;return d.innerHTML;}
+var seen={};
+function addChip(n,ts){
+ var d=document.createElement("span");d.className="chip";d.textContent=n;
+ board.appendChild(d);
+}
+function render(list){
+ board.innerHTML="";
+ list.sort(function(a,b){return a.ts-b.ts;}).forEach(function(m){addChip(m.n);});
+}
+var items=[];
+var saved=localStorage.getItem("wallName");
+if(saved)inp.value=saved;
+var ci=0,client=null;
+var brokers=["wss://broker.emqx.io:8084/mqtt","wss://broker.hivemq.com:8884/mqtt"];
+function connect(){
+ client=mqtt.connect(brokers[ci%brokers.length],{clientId:"wall-"+Math.random().toString(36).slice(2,10),reconnectPeriod:4000,connectTimeout:8000});
+ client.on("connect",function(){client.subscribe(TOPIC+"/#");});
+ client.on("message",function(t,p){
+  if(seen[t])return;seen[t]=1;
+  try{var m=JSON.parse(p.toString());if(m&&m.n){items.push(m);render(items);}}catch(e){}
+ });
+ client.on("error",function(){ci++;});
+}
+connect();
+document.getElementById("wallForm").addEventListener("submit",function(e){
+ e.preventDefault();
+ var n=inp.value.trim().replace(/\s+/g," ").slice(0,20);
+ if(!n)return;
+ for(var i=0;i<BAD.length;i++){if(n.indexOf(BAD[i])!==-1){msg.textContent="الشتايم مش بتعدي من هنا 🙅‍♂️";return;}}
+ msg.textContent="";
+ localStorage.setItem("wallName",n);
+ var m={n:n,ts:Math.floor(Date.now()/1000)};
+ if(client&&client.connected){
+  client.publish(TOPIC+"/"+Math.random().toString(36).slice(2,10),JSON.stringify(m),{retain:true});
+  msg.textContent="بصمتك اتسجلت ✋";
+ }else{
+  msg.textContent="لسه بتوصل بالنت، جرب تاني ثواني";
+ }
 });
 })();
 </script>
