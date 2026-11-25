@@ -189,8 +189,14 @@ footer a{color:var(--muted)}
   }
 
   document.getElementById('share').addEventListener('click',function(){
+    var mime='image/webp';
     cv.toBlob(function(blob){
-      var f=new File([blob],'sticker.png',{type:'image/png'});
+      if(!blob){mime='image/png';cv.toBlob(function(b2){go(b2,mime)},mime);return}
+      go(blob,mime);
+    },mime,0.95);
+    function go(blob,mime){
+      var ext=mime==='image/webp'?'.webp':'.png';
+      var f=new File([blob],'sticker'+ext,{type:mime});
       if(navigator.canShare&&navigator.canShare({files:[f]})){
         navigator.share({files:[f],title:'استيكر'}).catch(function(){});
       }else{
@@ -198,13 +204,15 @@ footer a{color:var(--muted)}
         a.download='sticker.png';a.href=cv.toDataURL('image/png');a.click();
         alert('المتصفح دا مش بيدعم المشاركة المباشرة، حمّلناهولك وابعته من الاستوديو 👌');
       }
-    },'image/png');
+    }
   });
 
   dl.addEventListener('click',function(){
+    var u=cv.toDataURL('image/webp',0.95),ext='.webp';
+    if(u.indexOf('data:image/webp')!==0){u=cv.toDataURL('image/png');ext='.png'}
     var a=document.createElement('a');
-    a.download='sticker.png';
-    a.href=cv.toDataURL('image/png');
+    a.download='sticker'+ext;
+    a.href=u;
     a.click();
   });
 })();
