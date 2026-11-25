@@ -25,6 +25,14 @@ canvas{background:#11142e;border-radius:12px;max-width:100%;touch-action:none}
 .mcard.open{background:#2c2f5c}
 #g2048{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:360px;margin:16px auto;background:#11142e;padding:10px;border-radius:12px;touch-action:none}
 .t{aspect-ratio:1;background:#1b1e3a;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;user-select:none}
+
+#reactBox{max-width:380px;height:220px;margin:16px auto;background:#1b1e3a;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;user-select:none;text-align:center;padding:10px}
+#reactBox.go{background:#22c55e}
+#simonGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:300px;margin:16px auto}
+.sp{aspect-ratio:1;border-radius:12px;opacity:.55;cursor:pointer}
+.sp.lit{opacity:1}
+#moleGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:340px;margin:16px auto}
+.hole{aspect-ratio:1;background:#1b1e3a;border-radius:12px;font-size:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none}
 </style>
 </head>
 <body>
@@ -36,6 +44,11 @@ canvas{background:#11142e;border-radius:12px;max-width:100%;touch-action:none}
 <button class="tab" data-g="gameMem" type="button">الذاكرة</button>
 <button class="tab" data-g="game2048" type="button">2048</button>
 <button class="tab" data-g="gamePong" type="button">بونج</button>
+<button class="tab" data-g="gameFlappy" type="button">فلابي</button>
+<button class="tab" data-g="gameBreak" type="button">كسر الطوب</button>
+<button class="tab" data-g="gameReact" type="button">رد الفعل</button>
+<button class="tab" data-g="gameSimon" type="button">سيمون</button>
+<button class="tab" data-g="gameMole" type="button">اضرب الخلد</button>
 </div>
 
 <div class="game active" id="gameXo">
@@ -68,6 +81,41 @@ canvas{background:#11142e;border-radius:12px;max-width:100%;touch-action:none}
 <canvas id="pong" width="360" height="420"></canvas>
 <div id="pongScore">إنت 0 - الكمبيوتر 0</div>
 <p style="opacity:.7;font-size:14px">حرك المضرب بصباعك أو بالماوس. اللي يوصل ٥ يكسب</p>
+</div>
+
+<div class="game" id="gameFlappy">
+<canvas id="flap" width="340" height="420"></canvas>
+<div id="flapScore">النقاط: 0</div>
+<p style="opacity:.7;font-size:14px">دوس على الشاشة عشان تطير</p>
+</div>
+
+<div class="game" id="gameBreak">
+<canvas id="brk" width="360" height="420"></canvas>
+<div id="brkScore">النقاط: 0</div>
+<button class="again" id="brkAgain" type="button">من الأول</button>
+<p style="opacity:.7;font-size:14px">حرك المضرب بصباعك أو بالماوس</p>
+</div>
+
+<div class="game" id="gameReact">
+<div id="reactBox">دوس هنا عشان تبدأ، واستنى اللون الأخضر 👀</div>
+<div id="reactRes"></div>
+</div>
+
+<div class="game" id="gameSimon">
+<div id="simonStat">دوس ابدأ وراقب الألوان</div>
+<div id="simonGrid">
+<div class="sp" data-i="0" style="background:#22c55e"></div>
+<div class="sp" data-i="1" style="background:#ef4444"></div>
+<div class="sp" data-i="2" style="background:#eab308"></div>
+<div class="sp" data-i="3" style="background:#3b82f6"></div>
+</div>
+<button class="again" id="simonStart" type="button">ابدأ</button>
+</div>
+
+<div class="game" id="gameMole">
+<div id="moleStat">النقاط: 0 | الوقت: 30</div>
+<div id="moleGrid"></div>
+<button class="again" id="moleStart" type="button">ابدأ</button>
 </div>
 
 <script>
@@ -211,6 +259,101 @@ pctx.fillStyle='#e74c3c';pctx.fillRect(cx,cpuY,PW,PH);
 pctx.fillStyle='#fff';pctx.beginPath();pctx.arc(ball.x,ball.y,7,0,7);pctx.fill();
 requestAnimationFrame(pongTick);}
 pongTick();
+
+/* Flappy */
+var fc=document.getElementById('flap'),fx=fc.getContext('2d');
+var bird={y:200,vy:0},pipes=[],fScore=0,fOver=false,fRun=null;
+function flapInit(){bird={y:200,vy:0};pipes=[];fScore=0;fOver=false;
+document.getElementById('flapScore').textContent='النقاط: 0';
+if(fRun)clearInterval(fRun);fRun=setInterval(flapTick,30);}
+fc.addEventListener('pointerdown',function(){if(fOver){flapInit();return;}bird.vy=-5.2;});
+function flapTick(){bird.vy+=0.35;bird.y+=bird.vy;
+if(!pipes.length||pipes[pipes.length-1].x<fc.width-140){
+var gap=110,top=40+Math.random()*(fc.height-gap-140);
+pipes.push({x:fc.width,top:top,gap:gap,passed:false});}
+pipes.forEach(function(p){p.x-=2.4;});
+pipes=pipes.filter(function(p){return p.x>-40;});
+var bx=60,by=bird.y;
+pipes.forEach(function(p){if(!p.passed&&p.x+34<bx){p.passed=true;fScore++;document.getElementById('flapScore').textContent='النقاط: '+fScore;}
+if(bx+12>p.x&&bx-12<p.x+34&&(by-12<p.top||by+12>p.top+p.gap))fOver=true;});
+if(by>fc.height-10||by<0)fOver=true;
+fx.fillStyle='#11142e';fx.fillRect(0,0,fc.width,fc.height);
+fx.fillStyle='#6c4df6';pipes.forEach(function(p){fx.fillRect(p.x,0,34,p.top);fx.fillRect(p.x,p.top+p.gap,34,fc.height);});
+fx.fillStyle='#fbbf24';fx.beginPath();fx.arc(bx,by,12,0,7);fx.fill();
+if(fOver){clearInterval(fRun);fRun=null;
+fx.fillStyle='rgba(0,0,0,.6)';fx.fillRect(0,0,fc.width,fc.height);
+fx.fillStyle='#fff';fx.font='22px Tahoma';fx.textAlign='center';
+fx.fillText('خسرت! النقاط: '+fScore,fc.width/2,fc.height/2-10);
+fx.fillText('دوس عشان تلعب تاني',fc.width/2,fc.height/2+22);}}
+flapInit();
+
+/* Breakout */
+var bc=document.getElementById('brk'),bx2=bc.getContext('2d');
+var bPad={x:bc.width/2-40,w:80},bBall,bBricks=[],bScore=0,bRun=null,bOver=false;
+function brkInit(){bBall={x:bc.width/2,y:bc.height-60,vx:3,vy:-3.4};bBricks=[];bScore=0;bOver=false;
+for(var r=0;r<4;r++)for(var c=0;c<6;c++)bBricks.push({x:14+c*56,y:30+r*22,w:50,h:16,alive:true});
+document.getElementById('brkScore').textContent='النقاط: 0';
+if(bRun)clearInterval(bRun);bRun=setInterval(brkTick,24);}
+function brkMove(cx){var r=bc.getBoundingClientRect();var x=(cx-r.left)*(bc.width/r.width);bPad.x=Math.max(0,Math.min(bc.width-bPad.w,x-bPad.w/2));}
+bc.addEventListener('mousemove',function(e){brkMove(e.clientX);});
+bc.addEventListener('touchmove',function(e){e.preventDefault();brkMove(e.touches[0].clientX);},{passive:false});
+function brkTick(){if(bOver)return;
+bBall.x+=bBall.vx;bBall.y+=bBall.vy;
+if(bBall.x<7||bBall.x>bc.width-7)bBall.vx*=-1;
+if(bBall.y<7)bBall.vy*=-1;
+if(bBall.y>bc.height-26&&bBall.y<bc.height-12&&bBall.x>bPad.x&&bBall.x<bPad.x+bPad.w){bBall.vy=-Math.abs(bBall.vy);bBall.vx+=(bBall.x-(bPad.x+bPad.w/2))*.06;}
+bBricks.forEach(function(b){if(b.alive&&bBall.x>b.x&&bBall.x<b.x+b.w&&bBall.y>b.y&&bBall.y<b.y+b.h){b.alive=false;bBall.vy*=-1;bScore++;document.getElementById('brkScore').textContent='النقاط: '+bScore;}});
+bx2.fillStyle='#11142e';bx2.fillRect(0,0,bc.width,bc.height);
+bx2.fillStyle='#6c4df6';bBricks.forEach(function(b){if(b.alive)bx2.fillRect(b.x,b.y,b.w,b.h);});
+bx2.fillStyle='#9d8cff';bx2.fillRect(bPad.x,bc.height-20,bPad.w,10);
+bx2.fillStyle='#fff';bx2.beginPath();bx2.arc(bBall.x,bBall.y,7,0,7);bx2.fill();
+if(bBricks.every(function(b){return !b.alive;})){bOver=true;clearInterval(bRun);
+bx2.fillStyle='#fff';bx2.font='22px Tahoma';bx2.textAlign='center';bx2.fillText('كسرتهم كلهم! 🎉',bc.width/2,bc.height/2);}
+if(bBall.y>bc.height){bOver=true;clearInterval(bRun);
+bx2.fillStyle='rgba(0,0,0,.6)';bx2.fillRect(0,0,bc.width,bc.height);
+bx2.fillStyle='#fff';bx2.font='22px Tahoma';bx2.textAlign='center';bx2.fillText('خسرت 😅 النقاط: '+bScore,bc.width/2,bc.height/2);}}
+document.getElementById('brkAgain').onclick=brkInit;
+brkInit();
+
+/* Reaction */
+var rb=document.getElementById('reactBox'),rr=document.getElementById('reactRes');
+var rState='idle',rTimer=null,rStart=0;
+rb.onclick=function(){
+if(rState==='idle'){rState='wait';rb.classList.remove('go');rb.textContent='استنى الأخضر...';rr.textContent='';
+rTimer=setTimeout(function(){rState='go';rb.classList.add('go');rb.textContent='دوس دلوقتي!';rStart=performance.now();},1200+Math.random()*2500);}
+else if(rState==='wait'){clearTimeout(rTimer);rState='idle';rb.textContent='بدري أوي 😅 دوس عشان تحاول تاني';}
+else if(rState==='go'){var ms=Math.round(performance.now()-rStart);rState='idle';rb.classList.remove('go');
+rb.textContent='دوس عشان تلعب تاني';
+rr.textContent='رد فعلك: '+ms+' ميلي ثانية '+(ms<250?'🔥':ms<350?'👍':'🐢');}};
+
+/* Simon */
+var sps=document.querySelectorAll('.sp'),sStat=document.getElementById('simonStat');
+var seq=[],userSeq=[],sLevel=0,sLock=true;
+function lit(i,ms){sps[i].classList.add('lit');setTimeout(function(){sps[i].classList.remove('lit');},ms||400);}
+function playSeq(){sLock=true;sStat.textContent='اتفرج... المستوى '+sLevel;
+var i=0;var t=setInterval(function(){lit(seq[i]);i++;if(i>=seq.length){clearInterval(t);sLock=false;sStat.textContent='دورك، كرر التسلسل';}},650);}
+function simonNext(){userSeq=[];seq.push(Math.floor(Math.random()*4));sLevel=seq.length;setTimeout(playSeq,600);}
+document.getElementById('simonStart').onclick=function(){seq=[];sLevel=0;simonNext();};
+sps.forEach(function(sp){sp.onclick=function(){if(sLock)return;var i=+this.dataset.i;lit(i,250);userSeq.push(i);
+var k=userSeq.length-1;
+if(userSeq[k]!==seq[k]){sLock=true;sStat.textContent='غلطت 😅 وصلت للمستوى '+sLevel+' - دوس ابدأ';return;}
+if(userSeq.length===seq.length)setTimeout(simonNext,700);};});
+
+/* Whack-a-mole */
+var mg=document.getElementById('moleGrid'),mStat=document.getElementById('moleStat');
+var holes=[],mScore=0,mTime=0,mRun=null,mPop=null;
+for(var hi=0;hi<9;hi++){var ho=document.createElement('div');ho.className='hole';mg.appendChild(ho);holes.push(ho);
+ho.onclick=function(){if(this.textContent==='🐹'){mScore++;mStat.textContent='النقاط: '+mScore+' | الوقت: '+mTime;this.textContent='';}};}
+document.getElementById('moleStart').onclick=function(){
+mScore=0;mTime=30;holes.forEach(function(h){h.textContent='';});
+if(mRun)clearInterval(mRun);if(mPop)clearInterval(mPop);
+mStat.textContent='النقاط: 0 | الوقت: 30';
+mRun=setInterval(function(){mTime--;mStat.textContent='النقاط: '+mScore+' | الوقت: '+mTime;
+if(mTime<=0){clearInterval(mRun);clearInterval(mPop);holes.forEach(function(h){h.textContent='';});
+mStat.textContent='خلص الوقت! جبت '+mScore+' خلد 🐹';}},1000);
+mPop=setInterval(function(){holes.forEach(function(h){h.textContent='';});
+holes[Math.floor(Math.random()*9)].textContent='🐹';},750);};
+
 </script>
 </body>
 </html>
